@@ -1,6 +1,8 @@
 
 import './App.css'
 import Create1 from "./Create1.jsx";
+import Create2 from "./Create2.jsx";
+import Login from "./Login.jsx";
 
 function App() {
 
@@ -8,7 +10,7 @@ function App() {
     
       <div style={{width:"100%", height:"100vh"}}>
         
-          <Create1/>
+          <Create2/>
           
       </div>
 
