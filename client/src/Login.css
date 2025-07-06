@@ -1,0 +1,47 @@
+*{
+    padding: none;
+    margin: none;
+    text-align: center;
+    align-items: center;
+}
+.form-control,
+.form-select {
+  background-color: #eee !important;     /* same as your input bg */
+  border-radius: 10px;
+  box-shadow: none !important;
+}
+
+/* Remove focus glow and change outline */
+.form-control:focus,
+.form-select:focus {
+  background-color: #eee !important;
+  border-color: #ccc !important;
+  box-shadow: none !important;
+}
+
+/* Optional: Prevent label float (if using floating-label classes) */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+transform: none !important;
+  
+}
+.Login{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0%;
+    align-items: center;
+    
+}
+.loginDivs{
+    width: 100%;
+}
+.loginInputs{
+    border: none;
+    width: 100%;
+    background-color: rgb(236, 234, 233);
+}
+.loginButton{
+    width: 100%;
+}
