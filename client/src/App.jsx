@@ -1,6 +1,5 @@
 
 import './App.css'
-import CreateAccount from "./CreateAccount.jsx"
 import Login from "./Login.jsx";
 
 function App() {

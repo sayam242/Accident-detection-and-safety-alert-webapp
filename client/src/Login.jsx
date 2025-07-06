@@ -4,6 +4,7 @@ import { useState } from "react";
 export default function Login(){
     const [userType, setUserType] = useState("");
     return (
+        
         <div className='Login' >
             <form style={{width:"50%",display:"flex",flexDirection:"column",justifyContent:"center",alignItems :"center",gap:"20px"}} action="">
                 <h2>Create your account</h2>
