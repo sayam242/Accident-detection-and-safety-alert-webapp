@@ -1,6 +1,22 @@
 
+import { useState } from "react";
 import "./Create2.css"
+import CurrentLoc from "./CurrentLoc"
 export default function Create2(){
+    let[details,setDetails]=useState({
+        hospitalname:"",
+        email:"",
+        contact:null,
+        location:null,
+    })
+
+    const handleLoc=(data)=>{
+        setDetails((curDetails)=>({
+            ...curDetails,[location]:data
+        }))
+    }
+
+   
     return (
         <div style={{display:"flex", width:"100%", height:"100vh"}}>
             <div style={{width:"40%",
@@ -21,12 +37,16 @@ export default function Create2(){
                         <label style={{fontSize:"12px", paddingTop:"2px"}} htmlFor="floatingTextareaname">HOSPITAL NAME</label>
                     </div>
                     <div className="form-floating loginDivs">
-                        <input type='text' style={{ textAlign: "left" }} className="form-control loginInputs" id="floatingTextareaname"></input>
-                        <label style={{fontSize:"12px", paddingTop:"2px"}} htmlFor="floatingTextareaname">LOCATION</label>
+                        <input type='text' style={{ textAlign: "left" }} className="form-control loginInputs" id="floatingTextareaemail"></input>
+                        <label style={{fontSize:"12px", paddingTop:"2px"}} htmlFor="floatingTextareaname">EMAIL</label>
                     </div>
                     <div className="form-floating loginDivs">
-                        <input type='text' pattern="\d*" inputMode="numeric" maxLength={10} style={{ textAlign: "left" }} className="form-control loginInputs no-spinner" id="floatingTextareapwd"></input>
+                        <input type='text' pattern="\d*" inputMode="numeric" maxLength={10} style={{ textAlign: "left" }} className="form-control loginInputs no-spinner" id="floatingTextareacontact"></input>
                         <label style={{fontSize:"12px", paddingTop:"2px"}} htmlFor="floatingTextareapwd">CONTACT NUMBER</label>
+                    </div>
+                    <div className="form-floating loginDivs">
+                    <CurrentLoc className="loginInputs" sendLoc={handleLoc}/>
+                    <label style={{fontSize:"15px",paddingTop:"12px" }} htmlFor="floatingSelect">LOCATION</label>
                     </div>
                     <div className="form-button loginDivs">
                         <button className="btn btn-danger loginButton" type="button">SignUp
@@ -37,5 +57,5 @@ export default function Create2(){
                 </form>
             </div>
         </div>
-    )
+    )   
 }

@@ -32,14 +32,7 @@ export default function Login(){
                         </select>
                         <label style={{fontSize:"15px",paddingTop:"12px" }} htmlFor="floatingSelect">USER TYPE</label>
                     </div>
-                    <div className="form-floating loginDivs">
-                        <input type='text' style={{ textAlign: "left" }} className="form-control loginInputs" id="floatingTextareaname"></input>
-                        <label style={{fontSize:"12px", paddingTop:"2px"}} htmlFor="floatingTextareaname">EMAIL OR USERNAME</label>
-                    </div>
-                    <div className="form-floating loginDivs">
-                        <input type='password' style={{ textAlign: "left" }} className="form-control loginInputs" id="floatingTextareapwd"></input>
-                        <label style={{fontSize:"12px", paddingTop:"2px"}} htmlFor="floatingTextareapwd">PASSSWORD</label>
-                    </div>
+
                     <div className="form-button loginDivs">
                         <button className="btn btn-danger loginButton" type="button">NEXT <span style={{ marginLeft: '8px' }}>➝</span>
                         </button>

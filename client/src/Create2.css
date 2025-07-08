@@ -19,14 +19,17 @@ input[type=number] {
 
 
 
-.form-control{
+
+.form-control,
+.form-select{
   background-color: #eee !important;     /* same as your input bg */
   border-radius: 10px;
   box-shadow: none !important;
 }
 
 /* Remove focus glow and change outline */
-.form-control:focus{
+.form-control:focus,
+.form-select:focus{
   background-color: #eee !important;
   border-color: #ccc !important;
   box-shadow: none !important;
