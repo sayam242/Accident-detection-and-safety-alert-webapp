@@ -1,16 +1,10 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import "../Views/Create2.css";
+import LocationPickerWithSearch from "./LocationPicker";
 
 export default function CurrentLoc({  sendLoc}){
-    const [userType, setUserType] = useState("");
-   
-   
-    
 
-
-    const locationHandler=(e)=>{
-        setUserType(e.target.value);
-        
+            useEffect(() => {
             navigator.geolocation.getCurrentPosition(
             (position) => { 
                 sendLoc({
@@ -25,28 +19,9 @@ export default function CurrentLoc({  sendLoc}){
                 return alert("Please enable Location")
             }
             );
-            
-
-        } 
+            }, [sendLoc]);
     
 
     
-    return (
-        
-            <div className="form-floating loginDivs">
-                <select
-                    className="form-select loginInputs"
-                    style={{textAlignLast: "left" }}
-                    value={userType} onChange={locationHandler}
-                    id="floatingSelect" aria-label="Floating label select example">
-                    <option value="" disabled hidden>
-
-                    </option>
-                    <option value="hospital">Use Current Location</option>
-                    {/* <option value="admin">Seleect on Map</option> */}
-                </select>
-                <label style={{fontSize:"15px",paddingTop:"12px" }} htmlFor="floatingSelect">LOCATION</label>
-            </div>
-                
-    )
+    return null;
 }

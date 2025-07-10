@@ -5,7 +5,11 @@ import CurrentLoc from "../Components/CurrentLoc"
 import BackgroundImage from "../Components/BackgroundImage";
 import LoginButton from "../Components/LoginButton";
 import InputText from "../Components/InputText";
+import LocationPicker from "../Components/LocationPicker.jsx"
+import Modal from "../Components/Modal";
 export default function Create2(){
+    const [userType, setUserType] = useState("");
+    const [showMap, setShowMap] = useState(false);
     let[AccountDetails,setAccountDetails]=useState({
         hospitalname:"",
         email:"",
@@ -26,6 +30,7 @@ export default function Create2(){
             ...curDetails,
             location:e,
         }));
+        setShowMap(false);
     }
 
     const handleSubmit=(event)=>{
@@ -38,11 +43,22 @@ export default function Create2(){
             contact:null,
             location:null,
         }))
+        setUserType("")
         setResetKey(prev => prev + 1);
+    }
+
+
+    const locationHandler=(e)=>{
+        const val = e.target.value;
+        setUserType(val);
+        if (val === "Select on Map") {
+      setShowMap(true); // open modal if "Select on Map"
+    }
     }
 
    
     return (
+        <>
         <div style={{display:"flex", width:"100%", height:"100vh"}}>
             <div style={{width:"40%",
                 height:"100%",
@@ -70,8 +86,23 @@ export default function Create2(){
                     }}></input>
                         <label style={{fontSize:"12px", paddingTop:"2px"}} htmlFor="floatingTextareapwd">CONTACT NUMBER</label>
                     </div>
+
+                    <div className="form-floating loginDivs">
+                        <select
+                            className="form-select loginInputs"
+                            style={{textAlignLast: "left" }}
+                            value={userType} onChange={locationHandler}
+                            id="floatingSelect" aria-label="Floating label select example">
+                            <option value="" disabled hidden>
+
+                            </option>
+                            <option value="Use Current Location">Use Current Location</option>
+                            <option value="Select on Map">Select on Map</option>
+                        </select>
+                        <label style={{fontSize:"15px",paddingTop:"12px" }} htmlFor="floatingSelect">LOCATION</label>
+                    </div>
                     
-                    <CurrentLoc className="loginInputs" key={resetKey} sendLoc={handleLoc} />
+                    
                     
                     
                     <LoginButton button="SignUp" myForm="create2Form"/>
@@ -80,6 +111,14 @@ export default function Create2(){
                     
                 </form>
             </div>
+            
+
         </div>
+            {userType === "Use Current Location" && <CurrentLoc className="loginInputs" key={resetKey} sendLoc={handleLoc} />}
+            {/* {userType === "admin" && <LocationPicker sendLoc={handleLoc} />} */}
+             <Modal show={showMap} onClose={() => setShowMap(false)}>
+            <LocationPicker sendLoc={handleLoc} />
+            </Modal>
+        </>
     )   
 }
