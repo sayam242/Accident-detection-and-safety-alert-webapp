@@ -6,8 +6,8 @@ import BackgroundImage from "../Components/BackgroundImage"
 import LoginButton from "../Components/LoginButton";
 export default function Login(){
     const [formData, setFormData] = useState({
-    name: "",
     email: "",
+    password:"",
   });
 
   const handleChange=(e)=> {
@@ -18,9 +18,34 @@ export default function Login(){
     }))
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
   e.preventDefault();
-  console.log(formData);
+     try {
+        const res = await fetch("http://localhost:3000/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            alert("✅ Hospital Found!");
+        } else {
+            alert("❌ " + data.message || "No such account exist");
+        }
+        } catch (err) {
+        console.error(err);
+        alert("❌ Server error");
+        }
+
+        console.log(formData);
+    setFormData((curData)=>({
+        ...curData,
+        email: "",
+        password:"",
+    
+    }))
 };
     
     return (
@@ -35,8 +60,8 @@ export default function Login(){
                 <form onSubmit={handleSubmit} id="loginForm"  style={{width:"50%",display:"flex",flexDirection:"column",justifyContent:"center",alignItems :"center",gap:"20px"}} action="#">
                     <h2>Log in to your account</h2>
                     
-                    <InputText label="EMAIL OR USERNAME" value={FormData.email} name="email" type="text" onChange={handleChange}/>
-                    <InputText label="PASSWORD" value={FormData.password} name="passsword" type="password" onChange={handleChange}/>
+                    <InputText label="EMAIL" value={formData.email} name="email" type="email" onChange={handleChange}/>
+                    <InputText label="PASSWORD" value={formData.password} name="password" type="password" onChange={handleChange}/>
                     <LoginButton myForm="loginForm" button="Login"/>
                     
                     <p><a style={{color:"black"}} href="#">Forgot Password</a></p>

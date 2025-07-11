@@ -29,18 +29,17 @@ const FlyToLocation = ({ coords }) => {
   return null;
 };
 
-const ClickHandler = ({ setCoords, sendLoc }) => {
+const ClickHandler = ({ setCoords}) => {
   useMapEvents({
     click(e) {
       const { lat, lng } = e.latlng;
       setCoords([lat, lng]);
-      sendLoc({ lat, lng });
     }
   });
   return null;
 };
 
-export default function LocationPickerWithSearch({ sendLoc }) {
+export default function LocationPickerWithSearch({ sendLoc,text }) {
   const [coords, setCoords] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -57,7 +56,7 @@ export default function LocationPickerWithSearch({ sendLoc }) {
         const lat = parseFloat(data[0].lat);
         const lng = parseFloat(data[0].lon);
         setCoords([lat, lng]);
-        sendLoc({ lat, lng });
+        
       } else {
         alert("Location not found");
       }
@@ -66,13 +65,26 @@ export default function LocationPickerWithSearch({ sendLoc }) {
     }
   };
 
+  const handleConfirm = () => {
+    if (coords) {
+      sendLoc({ lat: coords[0], lng: coords[1] });
+    } else {
+      alert("Please select a location first.");
+    }
+  };
+
   return (
     <div>
-      <h2>Select Accident Location</h2>
+      <h2>{text}</h2>
       <div style={{ display:"flex",alignItems:"center"}}>
         <input value={search} onChange={(e) => setSearch(e.target.value)} style={{ textAlign: "left", marginRight: 20, padding: 5  }} placeholder="Type address..." className="form-control" ></input>
                 <label style={{fontSize:"12px", paddingTop:"2px"}} htmlFor="floatingTextareaname"></label>
-        <button onClick={handleSearch} type="button" className="btn btn-danger" style={{width:"80px"}} >Select</button>
+        <button
+          onClick={handleSearch}
+          type="button"
+          className="btn btn-danger" 
+          style={{width:"80px"}} >
+        Select</button>
       </div>
       {/* ✅ Map is always visible */}
       <MapContainer
@@ -85,7 +97,7 @@ export default function LocationPickerWithSearch({ sendLoc }) {
         {/* ✅ Marker is only shown if coords exist */}
         {coords && <Marker position={coords} />}
         
-        <ClickHandler setCoords={setCoords} sendLoc={sendLoc} />
+        <ClickHandler setCoords={setCoords}  />
         {coords && <FlyToLocation coords={coords} />}
       </MapContainer>
 
@@ -94,7 +106,14 @@ export default function LocationPickerWithSearch({ sendLoc }) {
           <p>Latitude: {coords[0]}</p>
           <p>Longitude: {coords[1]}</p>
         </>
-      )}
+      )}  
+       <button
+        onClick={handleConfirm}
+        className="btn btn-success"
+        style={{ marginTop: "10px" }}
+      >
+        Confirm Location
+      </button>
     </div>
   );
 }

@@ -13,7 +13,7 @@ export default function Create2(){
     let[AccountDetails,setAccountDetails]=useState({
         hospitalname:"",
         email:"",
-        contact:null,
+        password:"",
         location:null,
     })
      const [resetKey, setResetKey] = useState(0);
@@ -33,18 +33,43 @@ export default function Create2(){
         setShowMap(false);
     }
 
-    const handleSubmit=(event)=>{
-        event.preventDefault;
+    const handleSubmit= async(event)=>{
+        event.preventDefault();
+        if (!AccountDetails.location) {
+            alert("Please select a location on the map.");
+            return;
+        }
+        
+            try {
+        const res = await fetch("http://localhost:3000/api/auth/create2", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(AccountDetails)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            alert("✅ Hospital Registered!");
+        } else {
+            alert("❌ " + data.message || "Registration failed");
+        }
+        } catch (err) {
+        console.error(err);
+        alert("❌ Server error");
+        }
+
         console.log(AccountDetails);
         setAccountDetails((curDetails)=>({
         ...curDetails,
             hospitalname:"",
             email:"",
-            contact:null,
+            password:"",
             location:null,
         }))
         setUserType("")
         setResetKey(prev => prev + 1);
+
     }
 
 
@@ -71,10 +96,10 @@ export default function Create2(){
                     <h2>Create your account</h2>
                     
                     <InputText label="HOSPITAL NAME" name="hospitalname" value={AccountDetails.hospitalname} type="text" onChange={handleChange}/>
-                    <InputText label="EMAIL" name="email" value={AccountDetails.email} type="text" onChange={handleChange}/>
-        
-                    <div className="form-floating loginDivs">
-                        <input type='text' pattern="\d*" inputMode="numeric" maxLength={10} value={AccountDetails.contact || ""} style={{ textAlign: "left" }} className="form-control loginInputs no-spinner" id="floatingTextareacontact"
+                    <InputText label="EMAIL" name="email" value={AccountDetails.email} type="email" onChange={handleChange}/>
+                    <InputText label="PASSWORD" value={AccountDetails.password} name="password" type="password" onChange={handleChange}/>
+                    {/* <div className="form-floating loginDivs">
+                        <input type='text' required pattern="\d*" inputMode="numeric" maxLength={10} minLength={10} value={AccountDetails.contact || ""} style={{ textAlign: "left" }} className="form-control loginInputs no-spinner" id="floatingTextareacontact"
                         onChange={(e) => {
                         const value = e.target.value;
                         if (/^\d*$/.test(value)) {
@@ -85,14 +110,16 @@ export default function Create2(){
                         }
                     }}></input>
                         <label style={{fontSize:"12px", paddingTop:"2px"}} htmlFor="floatingTextareapwd">CONTACT NUMBER</label>
-                    </div>
+                    </div> */}
 
                     <div className="form-floating loginDivs">
                         <select
                             className="form-select loginInputs"
                             style={{textAlignLast: "left" }}
                             value={userType} onChange={locationHandler}
+                            required
                             id="floatingSelect" aria-label="Floating label select example">
+                            
                             <option value="" disabled hidden>
 
                             </option>
@@ -117,7 +144,7 @@ export default function Create2(){
             {userType === "Use Current Location" && <CurrentLoc className="loginInputs" key={resetKey} sendLoc={handleLoc} />}
             {/* {userType === "admin" && <LocationPicker sendLoc={handleLoc} />} */}
              <Modal show={showMap} onClose={() => setShowMap(false)}>
-            <LocationPicker sendLoc={handleLoc} />
+            <LocationPicker sendLoc={handleLoc} text="Select Hospital Location" />
             </Modal>
         </>
     )   

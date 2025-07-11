@@ -27,6 +27,7 @@ export default function Login(){
                         className="form-select loginInputs"
                         style={{textAlignLast: "left" }}
                         value={userType}
+                        required
                         onChange={(e) => setUserType(e.target.value)}
                         id="floatingSelect" aria-label="Floating label select example">
                             <option value="" disabled hidden>
