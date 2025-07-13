@@ -1,13 +1,10 @@
-<<<<<<< HEAD
 @import "tailwindcss";
 @import url("leaflet/dist/leaflet.css");
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap'); 
-=======
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 /* import url("leaflet/dist/leaflet.css"); */
->>>>>>> e262557e99066e2790fc919dd9ae5111e6e09efb
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

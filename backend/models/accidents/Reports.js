@@ -10,9 +10,10 @@ const reportSchema=new mongoose.Schema({
         type:Number,
         required:true,
     },
-    condition:{
-        type:String,
-        required:true,
+    severity: {
+    type: String,
+    enum: ["low", "medium", "critical"],  // your 3 options
+    default: "medium"
     },
         location: {
       type: {
@@ -33,11 +34,7 @@ const reportSchema=new mongoose.Schema({
     image:{
         type:String,
     },
-    severity: {
-    type: String,
-    enum: ["low", "medium", "critical"],  // your 3 options
-    default: "medium"
-    },
+    
     timeDetected: {
          type: Date, default: Date.now 
     }
