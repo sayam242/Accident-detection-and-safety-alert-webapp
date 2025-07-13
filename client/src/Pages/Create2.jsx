@@ -50,13 +50,13 @@ export default function Create2(){
         const data = await res.json();
 
         if (res.ok) {
-            alert("✅ Hospital Registered!");
+            alert("Hospital Registered!");
         } else {
-            alert("❌ " + data.message || "Registration failed");
+            alert( data.message || "Registration failed");
         }
         } catch (err) {
         console.error(err);
-        alert("❌ Server error");
+        alert("Server error");
         }
 
         console.log(AccountDetails);

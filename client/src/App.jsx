@@ -5,6 +5,8 @@ import Create1 from "./Pages/Create1.jsx";
 import Create2 from "./Pages/Create2.jsx";
 import Login from "./Pages/Login.jsx";
 import NotFound from './Pages/NotFound.jsx';
+import Home from './Pages/Home.jsx';
+import Detected from './Pages/HomeDetected.jsx';
 
 
 
@@ -14,7 +16,8 @@ function App() {
     
       <Router>
         <Routes>
-          <Route path='/'/>
+          <Route path='/' element={<Home/>}/>
+          <Route path='/detected' element={<Detected/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/create1' element={<Create1/>}/>
           <Route path='create2'element={<Create2/>}/>
