@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Hospital = require("../models/Hospital");
+const Hospital = require("../models/accounts/Hospital");
 
 // Register
 router.post("/create2", async (req, res) => {

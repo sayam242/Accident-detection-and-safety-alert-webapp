@@ -1,0 +1,185 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+:root{
+    --blue-color: #0A406D;
+    --red-color: #DC3545;
+    --grey-color: #5C6062;
+}
+
+.landing-page{
+    height: 100vh;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1{
+    font-size: 4rem;
+    text-align: center;
+    background: linear-gradient(to right, #493979, #b1445b);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+}
+
+
+
+h2{
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    color: var(--blue-color);
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.primary-button{
+    display: flex;
+    justify-content: center;
+    background-color: var(--red-color);
+    color: white;
+    padding: 1rem 6rem;
+    height: 56px;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 3rem;
+    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.button-row{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 4rem;
+    justify-content: space-between;
+
+}
+
+.login-button{
+    background-color: white;
+    color: var(--blue-color);
+    height: 56px;
+    width: 176.5px;
+    font-size: 1rem ;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    border: 2px solid var(--blue-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.signup-button{
+    background-color: white;
+    color: var(--red-color);
+    height: 56px;
+    width: 176.5px;
+    font-size: 1rem ;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    border: 2px solid var(--red-color);
+    cursor: pointer;
+}
+
+.carcrash{
+    position: fixed;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1200px;
+}
+
+.icon-container{
+    overflow: hidden;
+    z-index: -1;    /*pushes it behind other content*/
+}
+
+.icon{
+    position: absolute;
+    z-index: -1;
+    animation: float 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-12px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+    
+}
+
+.cloud{
+    height: 182px;
+    width: 182px;
+    left: -30px;
+    top: 80px;
+    animation-delay: 0s;
+}
+.connection{
+    height: 200px;
+    width: 200px;
+    left: 250px;
+    top: -20px;
+    animation-delay: 1s;
+}
+.sensor{
+    height: 350px;
+    width: 350px;
+    left: -140px;
+    top: 400px;
+    animation-delay: 0.5s;
+}
+.message{
+    height: 205px;
+    width: 205px;
+    right: 120px;
+    top: 0px;
+    animation-delay: 2s;
+}
+.wifi{
+    height: 180px;
+    width: 180px;
+    right: -60px;
+    top: 250px;
+    animation-delay: 1s;
+}
+.location{
+    height: 180px;
+    width: 180px;
+    right: 140px;
+    top: 475px;
+    animation-delay: 0s;
+}
+
+.login-button:hover{
+    background-color: var(--blue-color);
+    color: white;
+}
+
+.signup-button:hover{
+    background-color: var(--red-color);
+    color: white;
+}
+
+.primary-button:hover{
+    background-color: #c62839;
+    box-shadow: 0 6px 16px rgba(229, 59, 73, 0.4);
+
+}

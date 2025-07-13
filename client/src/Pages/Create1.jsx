@@ -22,25 +22,27 @@ export default function Login(){
             <div className='Login' >
                 <form onSubmit={handleSubmit} id='create1Form' style={{width:"50%",display:"flex",flexDirection:"column",justifyContent:"center",alignItems :"center",gap:"20px"}} action="#">
                     <h2>Create your account</h2>
-                    <div className="form-floating loginDivs">
-                        <select
-                        className="form-select loginInputs"
-                        style={{textAlignLast: "left" }}
-                        value={userType}
-                        required
-                        onChange={(e) => setUserType(e.target.value)}
-                        id="floatingSelect" aria-label="Floating label select example">
-                            <option value="" disabled hidden>
-                                
-                            </option>
-                            <option value="hospital">HOSPITAL</option>
-                            <option value="admin">ADMIN</option>
-                        </select>
-                        <label style={{fontSize:"15px",paddingTop:"12px" }} htmlFor="floatingSelect">USER TYPE</label>
-                    </div>
+                        <div className="form-floating loginDivs">
+                            <select
+                            className="form-select loginInputs"
+                            style={{textAlignLast: "left" }}
+                            value={userType}
+                            required
+                            onChange={(e) => setUserType(e.target.value)}
+                            id="floatingSelect" aria-label="Floating label select example">
+                                <option value="" disabled hidden>
+                                    
+                                </option>
+                                <option value="hospital">HOSPITAL</option>
+                                <option value="admin">ADMIN</option>
+                            </select>
+                            <label style={{fontSize:"15px",paddingTop:"12px" }} htmlFor="floatingSelect">USER TYPE</label>
+                        </div>
+
+            
 
                     <LoginButton myForm="create1Form" button="Next"/>
-                    <p>Already Have an account?<a className='text-danger' href="#">Login</a></p>
+                    <p>Already Have an account?<a className='text-danger' href="http://localhost:5173/login">Login</a></p>
                     
                 </form>
             </div>
