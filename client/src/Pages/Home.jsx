@@ -1,20 +1,11 @@
 import React from "react";
 import location_icon from "../assets/dashboard/Location.png"
 import Navbar from "../Components/Navbar";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import DetailsPopup from "../Components/DetailsPopup";
+import axios from "axios";
 
-const accidentData = [
-  {
-    location: "PGIMER Roundabout",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=facearea&w=64&h=40",
-    time: "14:32",
-    severity: "Critical",
-    distance: "0.2 km",
-    status: "Responded",
-  },
- 
-];
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const severityColors = {
   Critical: "bg-red-100 text-red-600 border-red-300",
@@ -28,9 +19,35 @@ const statusColors = {
   Cancelled: "bg-purple-100 text-purple-700 border-purple-300",
 };
 
-export default function Home() {
+export default function Reported() {
 const [selectedAccident, setSelectedAccident] = useState(null);
 const [modalOpen, setModalOpen] = useState(false);
+const [imageModalOpen, setImageModalOpen] = useState(false);
+const [modalImageSrc, setModalImageSrc] = useState("");
+const [accidentData, setAccidentData] = useState([]);
+
+
+useEffect(() => {
+  const hospitalId = localStorage.getItem("hospitalId");
+
+  axios.get("http://localhost:3000/api/reports", {
+    params: { hospitalId }
+  })
+
+    .then((res) => {
+      console.log("API response:", res.data);
+      if (res.data?.success) {
+        setAccidentData(res.data.reports);
+      } else {
+        alert("⚠️ " + (res.data.message || "Failed to fetch data"));
+      }
+    })
+    .catch((err) => {
+      console.error("Failed to fetch accident data:", err);
+      alert("❌ Error fetching data");
+    });
+}, []);
+
 
 const handleMoreDetails = (accident) => {
   setSelectedAccident(accident);
@@ -41,6 +58,7 @@ const handleCloseModal = () => {
   setModalOpen(false);
   setSelectedAccident(null);
 };
+
   return (
     <>
 
@@ -51,7 +69,7 @@ const handleCloseModal = () => {
   accident={selectedAccident}
 />
     <div className="min-h-screen bg-gray-50 p-6">
-
+    
 
       {/* Main Card */}
       <div className="bg-white rounded-2xl shadow p-6">
@@ -83,19 +101,34 @@ const handleCloseModal = () => {
                   className={`h-16 ${index% 2 === 1 ? "bg-gray-50" : ""}`}
                   
                 >
-                  <td className="py-2 px-6"><div className="flex items-center h-full">{accident.location}</div></td>
-                  <td className="py-2 px-6">
-                    <div className="flex items-center h-full"><img
-                      src={accident.image}
-                      alt={accident.location}
-                      className="w-16 h-8 object-cover rounded-lg"
-                    /></div>
+                  <td className="py-2 px-6"><div className="flex items-center h-full">
+                  {accident.location?.coordinates?.join(", ") || "N/A"}
+                    </div>
                   </td>
-                  <td className="py-2 px-6" >
-                    <div className="px-3 items-center h-full">{accident.time}</div></td>
+                  
+                   <td className="py-2 px-4">
+                    <button
+                      onClick={() => {
+                        setModalImageSrc(accident.image);
+                        setImageModalOpen(true);
+                      }}
+                      className="focus:outline-none"
+                    >
+                      <img
+                        src={accident.image}
+                        alt={accident.location}
+                        className="w-16 h-10 object-cover rounded-lg"
+                      />
+                    </button>
+                  </td>
+                  <td className="py-2 px-6">
+                    <div className="px-3 items-center h-full">
+                      {new Date(accident.timeDetected).toLocaleString()}
+                    </div>
+                  </td>
                   <td className="py-2 px-6">
                     <div className="px-2flex items-center h-full"><span
-                      className={`inline-block px-3 py-1 rounded-full border text-xs font-semibold ${severityColors[accident.severity]}`}
+                      className={`inline-block w-24 text-center px-3 py-1 rounded-full border text-xs font-semibold ${severityColors[accident.severity]}`}
                     >
                       {accident.severity}
                     </span>
@@ -104,7 +137,7 @@ const handleCloseModal = () => {
                   <td className="py-2 px-6"><div className="px-2flex items-center h-full">{accident.distance}</div></td>
                   <td className="py-2 px-6">
                     <div className=" px-2flex items-center h-full"><span
-                      className={`inline-block px-3 py-1 rounded-full border text-xs font-semibold ${statusColors[accident.status]}`}
+                      className={`inline-block w-24 text-center px-3 py-1 rounded-full border text-xs font-semibold ${statusColors[accident.status]}`}
                     >
                       {accident.status}
                     </span></div>
@@ -120,6 +153,24 @@ const handleCloseModal = () => {
           </table>
         </div>
       </div>
+
+      {imageModalOpen && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-90">
+    <div className="relative bg-white rounded-lg shadow-lg p-4">
+      <button
+        className="absolute top-2 right-2 text-gray-600 text-2xl font-bold hover:text-red-500"
+        onClick={() => setImageModalOpen(false)}
+      >
+        &times;
+      </button>
+      <img
+        src={modalImageSrc}
+        alt="Full"
+        className="max-w-[80vw] max-h-[80vh] rounded-lg"
+      />
+    </div>
+  </div>
+)}
     </div>
     
     </>

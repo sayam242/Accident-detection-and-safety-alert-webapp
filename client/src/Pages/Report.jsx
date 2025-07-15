@@ -1,12 +1,12 @@
 
 import { useState } from "react";
 import "../Views/Login.css"
-import InputText from "../Components/InputText"
-import BackgroundImage from "../Components/BackgroundImage"
-import LoginButton from "../Components/LoginButton";
-import CurrentLoc from "../Components/CurrentLoc"
+import InputText from "../Components/InputText.jsx"
+import BackgroundImage from "../Components/BackgroundImage.jsx"
+import LoginButton from "../Components/LoginButton.jsx";
+import CurrentLoc from "../Components/CurrentLoc.jsx"
 import LocationPicker from "../Components/LocationPicker.jsx"
-import Modal from "../Components/Modal";
+import Modal from "../Components/Modal.jsx";
 export default function Report(){
     const [userType, setUserType] = useState("");
     const [showMap, setShowMap] = useState(false);
@@ -14,7 +14,7 @@ export default function Report(){
     const [AccidentDetails, setAccidentDetails] = useState({
     name: "",
     contact:"",
-    condition:"",
+    severity:"",
     location:null,
   });
 
@@ -34,7 +34,7 @@ export default function Report(){
         ...curData,
         name: "",
         contact:"",
-        condition:"",
+        severity:"",
         location:null,
     
     }))
@@ -87,8 +87,8 @@ export default function Report(){
                         <select
                         className="form-select loginInputs"
                         style={{textAlignLast: "left" }}
-                        value={AccidentDetails.condition}
-                        name="condition"
+                        value={AccidentDetails.severity}
+                        name="severity"
                         required
                         onChange={handleChange}
                         id="floatingSelect" aria-label="Floating label select example">

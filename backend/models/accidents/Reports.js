@@ -12,10 +12,10 @@ const reportSchema=new mongoose.Schema({
     },
     severity: {
     type: String,
-    enum: ["low", "medium", "critical"],  // your 3 options
-    default: "medium"
+    enum: ["Critical", "Moderate", "Low"],  // your 3 options
+    default: "Moderate"
     },
-        location: {
+    location: {
       type: {
         type: String,
         enum: ["Point"],     // must be 'Point'
@@ -33,6 +33,13 @@ const reportSchema=new mongoose.Schema({
     },
     image:{
         type:String,
+        required:true
+    },
+
+    status: {
+      type: String,
+      enum: ["Responded", "Pending", "Cancelled"],
+      default: "Pending",
     },
     
     timeDetected: {

@@ -1,14 +1,21 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+
 import "../Views/Login.css"
 import InputText from "../Components/InputText"
 import BackgroundImage from "../Components/BackgroundImage"
 import LoginButton from "../Components/LoginButton";
+
 export default function Login(){
     const [formData, setFormData] = useState({
     email: "",
     password:"",
   });
+  const [loading, setLoading]   = useState(false);
+  const navigate                = useNavigate();
 
   const handleChange=(e)=> {
     const {name,value}=e.target;
@@ -20,33 +27,38 @@ export default function Login(){
 
   const handleSubmit = async(e) => {
   e.preventDefault();
+    console.log(formData);
+    console.log("before call")
      try {
-        const res = await fetch("http://localhost:3000/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData)
-        });
+        const res = await axios.post( "http://localhost:3000/api/auth/login",
+        formData);
+        const data = res.data;
+        console.log("after api call")
+        console.log(data);
 
-        const data = await res.json();
+        if (res.data?.success) {
+        const { token, hospital } = res.data;
+        const { _id } = hospital;
+        
+        console.log("id is",_id);
 
-        if (res.ok) {
-            alert("✅ Hospital Found!");
+        localStorage.setItem("hospitalId", _id);
+        if (token) localStorage.setItem("token", token);
+        console.log("Saved hospitalId:", localStorage.getItem("hospitalId"));
+        alert("✅ Login successful");
+        navigate("/reported");
         } else {
-            alert("❌ " + data.message || "No such account exist");
-        }
-        } catch (err) {
-        console.error(err);
-        alert("❌ Server error");
-        }
-
-        console.log(formData);
-    setFormData((curData)=>({
-        ...curData,
-        email: "",
-        password:"",
-    
-    }))
-};
+        alert("❌ " + (res.data.message || "Login failed"));
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("❌ " + (err.response?.data?.message || "Server error"));
+    } finally {
+      setLoading(false);
+      // optional: clear form
+      setFormData({ email: "", password: "" });
+    }
+  };
     
     return (
         <div style={{display:"flex", width:"100%", height:"100vh"}}>

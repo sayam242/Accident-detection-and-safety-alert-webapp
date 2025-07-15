@@ -6,8 +6,12 @@ import BackgroundImage from "../Components/BackgroundImage";
 import LoginButton from "../Components/LoginButton";
 import InputText from "../Components/InputText";
 import LocationPicker from "../Components/LocationPicker.jsx"
+import { useNavigate } from "react-router-dom";
 import Modal from "../Components/Modal";
+import axios from "axios";
+
 export default function Create2(){
+    const navigate = useNavigate();
     const [userType, setUserType] = useState("");
     const [showMap, setShowMap] = useState(false);
     let[AccountDetails,setAccountDetails]=useState({
@@ -25,13 +29,22 @@ export default function Create2(){
             [name]:value,
         }));
     }
-    const handleLoc=(e)=>{
-        setAccountDetails((curDetails)=>({
+    const handleLoc = (coords) => {
+        // if lat/lng structure received, convert to GeoJSON
+        const location = coords.lat !== undefined && coords.lng !== undefined
+            ? {
+                type: "Point",
+                coordinates: [coords.lng, coords.lat], // longitude first
+            }
+            : coords; // already in correct format
+
+        setAccountDetails((curDetails) => ({
             ...curDetails,
-            location:e,
+            location,
         }));
+
         setShowMap(false);
-    }
+    };
 
     const handleSubmit= async(event)=>{
         event.preventDefault();
@@ -39,25 +52,26 @@ export default function Create2(){
             alert("Please select a location on the map.");
             return;
         }
-        
+        console.log("DEBUG: Sending to backend", AccountDetails);
             try {
-        const res = await fetch("http://localhost:3000/api/auth/create2", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(AccountDetails)
-        });
+       const res = await axios.post( "http://localhost:3000/api/auth/create2",
+        AccountDetails);
 
-        const data = await res.json();
+        const data = res.data;
 
-        if (res.ok) {
+        if (res.status === 201 || res.status === 200) {
             alert("Hospital Registered!");
+            navigate("/login"); 
         } else {
             alert( data.message || "Registration failed");
         }
-        } catch (err) {
-        console.error(err);
-        alert("Server error");
-        }
+        }catch (err) {
+            console.error("Registration error:", err);
+
+            // Try to get backend error message safely
+            const errorMsg = err.response?.data?.message || "Registration failed. Please try again.";
+            alert(errorMsg);
+            }
 
         console.log(AccountDetails);
         setAccountDetails((curDetails)=>({

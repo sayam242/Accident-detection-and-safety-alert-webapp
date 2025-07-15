@@ -1,11 +1,14 @@
 import React from "react";
-import LocationPickerWithSearch from "./LocationPicker";
+import MapPopup from "./MapPopup";
 
 export default function DetailsPopup({ open, onClose, accident }) {
   if (!open || !accident) return null;
+  console.log("Location arrqay is: ",accident.location.coordinates)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-auto">
+      
+
       <div className="bg-white rounded-3xl border border-gray-300 shadow-lg w-full max-w-2xl p-6 relative">
         {/* Close Button */}
         <button
@@ -15,7 +18,8 @@ export default function DetailsPopup({ open, onClose, accident }) {
           &times;
         </button>
       
-        <div className="w-full h-48 bg-gray-200 rounded-2xl flex items-center justify-center mb-6 relative">
+        <div className="w-full h-50 rounded-2xl flex items-center justify-center mt-2 mb-6 relative">
+          {accident.location.coordinates && <MapPopup coords={accident.location.coordinates} />}
           
           <span className="absolute bottom-4 right-4 bg-white rounded-full p-2 shadow">
             
@@ -26,7 +30,7 @@ export default function DetailsPopup({ open, onClose, accident }) {
         <div className="grid grid-cols-4 gap-y-4 gap-x-2 text-center mb-6">
           <div>
             <div className="font-bold">Location</div>
-            <div>{accident.location}</div>
+            <div>{accident.location.coordinates}</div>
           </div>
           <div>
             <div className="font-bold">Time</div>

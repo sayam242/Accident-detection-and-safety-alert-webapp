@@ -32,8 +32,8 @@ const LandingPage = () => {
             <img src={location} alt="" className="icon location" />
 
         </div>
-        <h1>Accident Detection System</h1>
-        <h2>When Accidents Happen - We're Already Responding</h2>
+        <h1 className='landing-title'>Accident Detection System</h1>
+        <h2 className='landing-tagline'>When Accidents Happen - We're Already Responding</h2>
         <button onClick={handleRepot} className='primary-button'> Report An Accident</button>
         <div className='button-row'>
             <button onClick={handleLogin} className='login-button'>Login</button>

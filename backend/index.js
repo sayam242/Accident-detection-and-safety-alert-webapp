@@ -2,6 +2,7 @@
 const express=require("express");
 const mongoose=require("mongoose");
 const authRoutes = require("./routes/authRoutes");
+const reportRoutes=require("./routes/reportRoutes")
 const cors=require("cors");
 
 
@@ -13,6 +14,7 @@ app.use(cors({
 }))
 app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/reports",reportRoutes);
 
 
 // to connect mongoose ...........
@@ -21,7 +23,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/adrs",{
     useUnifiedTopology: true
 }).then(() => console.log("MongoDB Connected"));
 
-app.use("/api/reports",require("./routes/reportRoutes"));
 
 app.listen(3000,()=>{
     console.log("listenning to port 3000")

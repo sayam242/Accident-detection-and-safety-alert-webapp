@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap'); 
+
 body {
   margin: 0;
   padding: 0;
@@ -18,7 +20,7 @@ body {
     justify-content: center;
 }
 
-h1{
+.landing-title{
     font-size: 4rem;
     text-align: center;
     background: linear-gradient(to right, #493979, #b1445b);
@@ -26,12 +28,13 @@ h1{
     -webkit-background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+    font-weight: 700;
 
 }
 
 
 
-h2{
+.landing-tagline{
     font-size: 1.5rem;
     margin-top: 1rem;
     color: var(--blue-color);
@@ -90,14 +93,18 @@ h2{
     border-radius: 0.5rem;
     border: 2px solid var(--red-color);
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.carcrash{
-    position: fixed;
-    bottom: 0;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 1200px;
+.carcrash {
+  position: fixed;
+  bottom: 0;
+  left: 50%;                     /* Center anchor point */
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1200px;
+  z-index: -1;                   /* Push behind content */
+  pointer-events: none;         
 }
 
 .icon-container{
@@ -125,47 +132,46 @@ h2{
     
 }
 
-.cloud{
-    height: 182px;
-    width: 182px;
-    left: -30px;
-    top: 80px;
-    animation-delay: 0s;
+.cloud {
+  width: clamp(100px, 12vw, 182px);
+  height: clamp(100px, 12vw, 182px);
+  left: -2vw;
+  top: 10vh;
 }
-.connection{
-    height: 200px;
-    width: 200px;
-    left: 250px;
-    top: -20px;
-    animation-delay: 1s;
+
+.connection {
+  width: clamp(120px, 14vw, 200px);
+  height: clamp(120px, 14vw, 200px);
+  left: 30vw;
+  top: -2vh;
 }
-.sensor{
-    height: 350px;
-    width: 350px;
-    left: -140px;
-    top: 400px;
-    animation-delay: 0.5s;
+
+.sensor {
+  width: clamp(300px, 20vw, 450px);
+  height: clamp(300px, 20vw, 450px);
+  left: -8vw;
+  top: 45vh;
 }
-.message{
-    height: 205px;
-    width: 205px;
-    right: 120px;
-    top: 0px;
-    animation-delay: 2s;
+
+.message {
+  width: clamp(120px, 14vw, 205px);
+  height: clamp(120px, 14vw, 205px);
+  right: 12vw;
+  top: 0;
 }
-.wifi{
-    height: 180px;
-    width: 180px;
-    right: -60px;
-    top: 250px;
-    animation-delay: 1s;
+
+.wifi {
+  width: clamp(100px, 12vw, 180px);
+  height: clamp(100px, 12vw, 180px);
+  right: -4vw;
+  top: 28vh;
 }
-.location{
-    height: 180px;
-    width: 180px;
-    right: 140px;
-    top: 475px;
-    animation-delay: 0s;
+
+.location {
+  width: clamp(100px, 12vw, 180px);
+  height: clamp(100px, 12vw, 180px);
+  right: 14vw;
+  top: 55vh;
 }
 
 .login-button:hover{
@@ -182,4 +188,126 @@ h2{
     background-color: #c62839;
     box-shadow: 0 6px 16px rgba(229, 59, 73, 0.4);
 
+}
+
+
+/* screen size upto 1440 px  */
+
+@media (max-width: 1440px) {
+  .icon {
+    transform: scale(0.85);
+  }
+
+  .carcrash {
+   width: 80vw;
+  max-width: 800px;
+  }
+}
+
+.cloud,
+.connection,
+.message,
+.wifi,
+.location {
+  width: clamp(80px, 16vw, 140px);
+  height: clamp(80px, 16vw, 140px);
+}
+
+
+
+@media (max-width: 1440px) {
+  .landing-title {
+    font-size: 3rem;
+  }
+
+  .landing-tagline {
+    font-size: 1.2rem;
+    letter-spacing: 1.5px;
+    margin-top: 0.5rem;
+  }
+
+  .primary-button {
+    width: 380px;
+    height: 56px;
+    padding: 0; /* Let width control size */
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+  }
+
+  .login-button,
+  .signup-button {
+    width: 180px;
+    height: 56px;
+    font-size: 1rem;
+  }
+
+  .button-row {
+    gap: 20px;
+    justify-content: center;
+  }
+}
+
+
+
+
+
+/* screen larger than 1440px */
+
+@media (min-width: 1441px) {
+
+.landing-page {
+  /* Move everything up slightly */
+  margin-top: -4rem;
+}    
+
+
+ .landing-title{
+    font-size: 5rem;
+  }
+
+  .landing-tagline{
+    font-size: 2rem;
+    letter-spacing: 3px;
+  }
+
+  .primary-button {
+    font-size: 1.4rem;
+    padding: 1.2rem 7.25rem;
+    height: 64px;
+  }
+
+  .login-button,
+  .signup-button {
+    font-size: 1.1rem;
+    width: 200px;
+    height: 60px;
+  }
+
+  .carcrash {
+    max-width: 1400px;
+  }
+
+.sensor {
+    width: 300px;
+    height: 300px;
+    left: -150px;
+    top: 390px;
+  }
+
+  /* Optional: scale other icons slightly too */
+  .cloud,
+  .connection,
+  .message,
+  .wifi,
+  .location {
+    transform: scale(1.1);
+  }
+
+  .button-row {
+    gap: 2rem;
+  }
+
+  .landing-page {
+    padding-top: 2rem;
+  }
 }

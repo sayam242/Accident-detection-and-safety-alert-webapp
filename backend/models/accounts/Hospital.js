@@ -1,27 +1,39 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 
-const hospitalSchema=new mongoose.Schema({
-    hospitalname:{
-        type:String,
-        required:true,
+const hospitalSchema = new mongoose.Schema({
+  hospitalname: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+
+  location: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      default: "Point"
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
     },
-    password:{
-        type:String,
-        required:true,
-    },
-    location:{
-        lat:Number,
-        lng:Number,
-    },
-    createdAt:{
-        type:Date,
-        default: Date.now
-    }
+  },
+
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports=mongoose.model("Hospital",hospitalSchema);
+// Optional: create 2dsphere index for geospatial queries
+hospitalSchema.index({ location: "2dsphere" });
+
+module.exports = mongoose.model("Hospital", hospitalSchema);
