@@ -2,8 +2,9 @@ const express   = require("express");
 const mongoose  = require("mongoose");
 const router    = express.Router();
 
-const Report   = require("../models/accidents/Reports");
+
 const Hospital = require("../models/accounts/Hospital");
+const Detected = require("../models/accidents/Detected");
 
 /* ---------- helper: Haversine in km ---------- */
 function haversine([lon1, lat1], [lon2, lat2]) {
@@ -39,7 +40,7 @@ router.get("/", async (req, res) => {
     const hospCoords = hospital.location.coordinates;       // [lon, lat]
 
     /* 3️⃣  fetch accident reports */
-    const reports = await Report.find({});
+    const reports = await Detected.find({});
 
     /* 4️⃣  enrich with distance */
     const enriched = reports.map(r => {
@@ -59,17 +60,6 @@ router.get("/", async (req, res) => {
 });
 
 /* simple health‑check */
-router.get("/test", (_req, res) => res.send("✅ reportRoutes working"));
-
-
-
-
-const reportController = require("../controllers/reportsController.js");
-
-router.post("/", reportController.createReport);
-router.get("/", reportController.getAllReports);
-router.get("/:id", reportController.getReportById);
-router.put("/:id", reportController.updateReport);
-router.delete("/:id", reportController.deleteReport);
+router.get("/test", (_req, res) => res.send("✅ detectedRoutes working"));
 
 module.exports = router;

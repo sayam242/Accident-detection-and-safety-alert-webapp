@@ -4,7 +4,7 @@ const sampleReports = [
     contact: 9815612345,
     severity: "Critical",
     location: { type: "Point", coordinates: [76.7746, 30.7410] },
-    image: "https://images.unsplash.com/photo-1560364589-4f7fff7c4f88?auto=format&fit=crop&w=800&q=60",
+    image: "https://ik.imagekit.io/csgugzl4j/image.png?updatedAt=1752749651221",
     timeDetected: new Date(),
     status: "Pending"
   },
@@ -13,7 +13,7 @@ const sampleReports = [
     contact: 9815029876,
     severity: "Moderate",
     location: { type: "Point", coordinates: [76.7737, 30.7049] },
-    image: "https://images.unsplash.com/photo-1522199710521-72d69614c702?auto=format&fit=crop&w=800&q=60",
+    image: "https://ik.imagekit.io/csgugzl4j/image(6).png?updatedAt=1752749657030",
     timeDetected: new Date(),
     status: "Responded"
   },
@@ -22,7 +22,7 @@ const sampleReports = [
     contact: 9876543210,
     severity: "Low",
     location: { type: "Point", coordinates: [76.8010, 30.6960] },
-    image: "https://images.unsplash.com/photo-1559119314-a06b32a7e9ea?auto=format&fit=crop&w=800&q=60",
+    image: "https://ik.imagekit.io/csgugzl4j/image(8).png?updatedAt=1752749656871",
     timeDetected: new Date(),
     status: "Cancelled"
   },
@@ -31,7 +31,7 @@ const sampleReports = [
     contact: 9888876543,
     severity: "Critical",
     location: { type: "Point", coordinates: [76.8203, 30.7195] },
-    image: "https://images.unsplash.com/photo-1603386329225-868f37bbb241?auto=format&fit=crop&w=800&q=60",
+    image: "https://ik.imagekit.io/csgugzl4j/image(4).png?updatedAt=1752749654980",
     timeDetected: new Date(),
     status: "Pending"
   },
@@ -40,7 +40,7 @@ const sampleReports = [
     contact: 9915421133,
     severity: "Moderate",
     location: { type: "Point", coordinates: [76.7221, 30.7066] },
-    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=60",
+    image: "https://ik.imagekit.io/csgugzl4j/image(7).png?updatedAt=1752749654799",
     timeDetected: new Date(),
     status: "Responded"
   },
@@ -49,7 +49,7 @@ const sampleReports = [
     contact: 9872119988,
     severity: "Low",
     location: { type: "Point", coordinates: [76.7636, 30.7619] },
-    image: "https://images.unsplash.com/photo-1586917380139-ac2995e17c9e?auto=format&fit=crop&w=800&q=60",
+    image: "https://ik.imagekit.io/csgugzl4j/image(2).png?updatedAt=1752749653170",
     timeDetected: new Date(),
     status: "Cancelled"
   },
@@ -58,7 +58,7 @@ const sampleReports = [
     contact: 9023456781,
     severity: "Critical",
     location: { type: "Point", coordinates: [76.8607, 30.6905] },
-    image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=60",
+    image: "https://ik.imagekit.io/csgugzl4j/image(3).png?updatedAt=1752749650670",
     timeDetected: new Date(),
     status: "Responded"
   },
@@ -67,7 +67,7 @@ const sampleReports = [
     contact: 9044432211,
     severity: "Moderate",
     location: { type: "Point", coordinates: [76.8177, 30.6449] },
-    image: "https://images.unsplash.com/photo-1594041680982-e91f27fd02b4?auto=format&fit=crop&w=800&q=60",
+    image: "https://ik.imagekit.io/csgugzl4j/image(1).png?updatedAt=1752749648825",
     timeDetected: new Date(),
     status: "Pending"
   },
@@ -76,7 +76,7 @@ const sampleReports = [
     contact: 9988776655,
     severity: "Low",
     location: { type: "Point", coordinates: [76.7301, 30.7192] },
-    image: "https://images.unsplash.com/photo-1558611848-73f7eb4001a1?auto=format&fit=crop&w=800&q=60",
+    image: "https://ik.imagekit.io/csgugzl4j/image(5).png?updatedAt=1752749647405",
     timeDetected: new Date(),
     status: "Pending"
   },

@@ -61,7 +61,8 @@ const handleCloseModal = () => {
 
   return (
     <>
-
+    
+    
     <Navbar/>
     <DetailsPopup
   open={modalOpen}
@@ -127,7 +128,7 @@ const handleCloseModal = () => {
                     </div>
                   </td>
                   <td className="py-2 px-6">
-                    <div className="px-2flex items-center h-full"><span
+                    <div className="px-2 flex items-center h-full"><span
                       className={`inline-block w-24 text-center px-3 py-1 rounded-full border text-xs font-semibold ${severityColors[accident.severity]}`}
                     >
                       {accident.severity}
