@@ -42,7 +42,7 @@ export default function DetailsPopup({ open, onClose, accident }) {
           </div>
           <div>
             <div className="font-bold">Distance</div>
-            <div>{accident.distance}</div>
+            <div>{accident.distanceKm != null ? `${accident.distanceKm} km` : "Unknown"}</div>
           </div>
           <div>
             <div className="font-bold">Blood Presence</div>

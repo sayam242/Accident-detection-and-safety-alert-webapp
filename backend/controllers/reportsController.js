@@ -34,11 +34,32 @@ export const createReport = async (req, res) => {
 
 export const getAllReports = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
-    const reports = await Report.find()
-      .skip((page - 1) * limit)
-      .limit(Number(limit))
-      .sort({ createdAt: -1 });
+    const hosp = req.hospital;
+    const hospCoords = hosp?.location?.coordinates; // [lon, lat]
+    if (!hospCoords || hospCoords.length !== 2) {
+      return res.status(400).json({ success: false, message: "Hospital location not set" });
+    }
+
+    const MAX_DISTANCE_M = 20_000; // 20km
+
+    const reports = await Report.aggregate([
+      {
+        $geoNear: {
+          near: { type: "Point", coordinates: hospCoords },
+          distanceField: "distanceMeters",
+          maxDistance: MAX_DISTANCE_M,
+          spherical: true,
+          key: "location",
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      {
+        $addFields: {
+          distanceKm: { $round: [{ $divide: ["$distanceMeters", 1000] }, 2] },
+        },
+      },
+      { $project: { distanceMeters: 0 } },
+    ]);
 
     return res.status(200).json({ success: true, reports });
   } catch (error) {
@@ -46,6 +67,7 @@ export const getAllReports = async (req, res) => {
     return res.status(500).json({ success: false, message: "Failed to fetch reports" });
   }
 };
+
 
 export const getReportById = async (req, res) => {
   try {

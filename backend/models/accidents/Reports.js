@@ -45,4 +45,7 @@ const reportSchema = new mongoose.Schema({
   },
 });
 
+
+reportSchema.index({ location: "2dsphere" });
+
 export default mongoose.model("Report", reportSchema);

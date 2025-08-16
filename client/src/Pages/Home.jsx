@@ -46,9 +46,8 @@ useEffect(() => {
       const res = await axios.get("http://localhost:3000/api/reports", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Reports response:", res.data);
-      // Adjust to your standardized response shape later
-      setAccidentData(Array.isArray(res.data) ? res.data : res.data.reports || []);
+     const list = res.data?.reports || [];
+      setAccidentData(list);
     } catch (err) {
       console.error("Failed to fetch accident data:", err?.response?.data || err.message);
       alert("Error fetching data");
@@ -86,97 +85,87 @@ useEffect(() => {
               <span className="text-gray-700 font-medium">Chandigarh</span>
             </div>
           </div>
+<div className="overflow-x-auto">
+  <table className="min-w-full w-full table-fixed border-collapse">
+    <thead>
+      <tr className="bg-gray-100 text-gray-700">
+        <th className="py-3 px-6 text-center font-semibold align-middle">Location</th>
+        <th className="py-3 px-6 text-center font-semibold align-middle">Image</th>
+        <th className="py-3 px-6 text-center font-semibold align-middle">Time</th>
+        <th className="py-3 px-6 text-center font-semibold align-middle">Severity</th>
+        <th className="py-3 px-6 text-center font-semibold align-middle">Distance</th>
+        {/* <th className="py-3 px-6 text-center font-semibold align-middle">Status</th> */}
+        <th className="py-3 px-6 align-middle"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {accidentData.map((accident, index) => (
+        <tr
+          key={index}
+          className={`h-16 ${index % 2 === 1 ? "bg-gray-50" : ""} align-middle`}
+        >
+          <td className="py-3 px-6 text-center align-middle">
+            {accident.location?.coordinates?.join(", ") || "N/A"}
+          </td>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead>
-                <tr className="bg-gray-100 text-gray-700">
-                  <th className="py-2 px-6 text-center font-semibold">Location</th>
-                  <th className="py-2 px-8 text-center font-semibold">Image</th>
-                  <th className="py-2 px-6 text-center font-semibold">Time</th>
-                  <th className="py-2 px-6 text-center font-semibold">Severity</th>
-                  <th className="py-2 px-6 text-center font-semibold">Distance</th>
-                  <th className="py-2 px-6 text-center font-semibold">Status</th>
-                  <th className="py-2 px-6"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {accidentData.map((accident, index) => (
-                  <tr
-                    key={index}
-                    className={`h-16 ${index % 2 === 1 ? "bg-gray-50" : ""}`}
-                  >
-                    <td className="py-2 px-6">
-                      <div className="flex items-center h-full">
-                        {accident.location?.coordinates?.join(", ") || "N/A"}
-                      </div>
-                    </td>
+          <td className="py-3 px-6 text-center align-middle">
+            <button
+              onClick={() => {
+                setModalImageSrc(accident.image);
+                setImageModalOpen(true);
+              }}
+              className="focus:outline-none inline-flex items-center justify-center"
+            >
+              <img
+                src={accident.image}
+                alt="Accident"
+                className="w-16 h-10 object-cover rounded-lg inline-block align-middle"
+              />
+            </button>
+          </td>
 
-                    <td className="py-2 px-4">
-                      <button
-                        onClick={() => {
-                          setModalImageSrc(accident.image);
-                          setImageModalOpen(true);
-                        }}
-                        className="focus:outline-none"
-                      >
-                        <img
-                          src={accident.image}
-                          alt={accident.location}
-                          className="w-16 h-10 object-cover rounded-lg"
-                        />
-                      </button>
-                    </td>
+          <td className="py-3 px-6 text-center align-middle">
+            {new Date(accident.timeDetected).toLocaleString()}
+          </td>
 
-                    <td className="py-2 px-6">
-                      <div className="px-3 items-center h-full">
-                        {new Date(accident.timeDetected).toLocaleString()}
-                      </div>
-                    </td>
+          <td className="py-3 px-6 text-center align-middle">
+            <span
+              className={`inline-block min-w-[6rem] text-center px-3 py-1 rounded-full border text-xs font-semibold align-middle ${
+                severityColors[accident.severity]
+              }`}
+            >
+              {accident.severity}
+            </span>
+          </td>
 
-                    <td className="py-2 px-6">
-                      <div className="px-2 flex items-center h-full">
-                        <span
-                          className={`inline-block w-24 text-center px-3 py-1 rounded-full border text-xs font-semibold ${
-                            severityColors[accident.severity]
-                          }`}
-                        >
-                          {accident.severity}
-                        </span>
-                      </div>
-                    </td>
+          <td className="py-3 px-6 text-center align-middle">
+            {accident.distanceKm != null ? `${accident.distanceKm} km` : "Unknown"}
+          </td>
 
-                    <td className="py-2 px-6">
-                      <div className="px-2 flex items-center h-full">
-                        {accident.distance || "Unknown"}
-                      </div>
-                    </td>
+          {/* <td className="py-3 px-6 text-center align-middle">
+            <span
+              className={`inline-block min-w-[6rem] text-center px-3 py-1 rounded-full border text-xs font-semibold align-middle ${
+                statusColors[accident.status]
+              }`}
+            >
+              {accident.status}
+            </span>
+          </td> */}
 
-                    <td className="py-2 px-6">
-                      <div className="px-2 flex items-center h-full">
-                        <span
-                          className={`inline-block w-24 text-center px-3 py-1 rounded-full border text-xs font-semibold ${
-                            statusColors[accident.status]
-                          }`}
-                        >
-                          {accident.status}
-                        </span>
-                      </div>
-                    </td>
+          <td className="py-3 px-6 text-center align-middle">
+            <button
+              onClick={() => handleMoreDetails(accident)}
+              className="px-3 py-1 rounded-full border border-blue-300 text-blue-700 bg-blue-50 text-xs font-semibold hover:bg-blue-100 transition"
+            >
+              More Details
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
-                    <td className="py-2 px-6">
-                      <button
-                        onClick={() => handleMoreDetails(accident)}
-                        className="px-3 py-1 rounded-full border border-blue-300 text-blue-700 bg-blue-50 text-xs font-semibold hover:bg-blue-100 transition"
-                      >
-                        More Details
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </div>
 
         {imageModalOpen && (
