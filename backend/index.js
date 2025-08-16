@@ -1,35 +1,43 @@
-// all requires..........
-const express=require("express");
-const mongoose=require("mongoose");
-const authRoutes = require("./routes/authRoutes");
-const reportRoutes=require("./routes/reportRoutes")
-const detectedRoutes=require("./routes/detectedRoutes");
-const otpRoutes=require("./routes/otpRoutes");
+import dotenv from "dotenv";
+dotenv.config();
 
-const cors=require("cors");
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
 
+// Import route files
+import authRoutes from "./routes/authRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
+import detectedRoutes from "./routes/detectedRoutes.js";
+import otpRoutes from "./routes/otpRoutes.js";
 
-const app=express();
+const app = express();
 
-// all use .......................
-app.use(cors({
-    origin:"http://localhost:5173",
-    credentials: true
-}))
+// Middleware
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json());
+
+// Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/reports",reportRoutes);
-app.use("/api/detected",detectedRoutes);
-app.use("/api/otp",otpRoutes); 
+app.use("/api/reports", reportRoutes);
+app.use("/api/detected", detectedRoutes);
+app.use("/api/otp", otpRoutes);
 
-
-// to connect mongoose ...........
-mongoose.connect("mongodb://127.0.0.1:27017/adrs",{
+// MongoDB connection
+mongoose
+  .connect("mongodb://127.0.0.1:27017/adrs", {
     useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => console.log("MongoDB Connected"));
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-
-app.listen(3000,()=>{
-    console.log("listenning to port 3000")
-})
+// Start server
+app.listen(3000, () => {
+  console.log("Listening to port 3000");
+});

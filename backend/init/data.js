@@ -181,4 +181,4 @@ const sampleReports = [
   }
 ];
 
-module.exports = sampleReports;
+export default sampleReports;

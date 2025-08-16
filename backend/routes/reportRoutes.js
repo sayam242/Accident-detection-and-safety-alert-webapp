@@ -1,11 +1,14 @@
-const express   = require("express");
-const mongoose  = require("mongoose");
-const router    = express.Router();
+import express from "express";
+import mongoose from "mongoose";
 
-const Report   = require("../models/accidents/Reports");
-const Hospital = require("../models/accounts/Hospital");
+import Report from "../models/accidents/Reports.js";
+import Hospital from "../models/accounts/Hospital.js";
+import { hospiAuth } from "../middlewares/hospiAuth.js";
+import * as reportController from "../controllers/reportsController.js";
 
-/* ---------- helper: Haversine in km ---------- */
+const router = express.Router();
+
+/* ---------- helper: Haversine in km ---------- */
 function haversine([lon1, lat1], [lon2, lat2]) {
   const R = 6371;
   const toRad = d => (d * Math.PI) / 180;
@@ -21,55 +24,45 @@ function haversine([lon1, lat1], [lon2, lat2]) {
   return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-/* ---------- GET  /api/reports?hospitalId=xxx ---------- */
-router.get("/", async (req, res) => {
-  try {
-    /* 1️⃣  clean & validate ID */
-    let { hospitalId } = req.query;
-    hospitalId = hospitalId?.replace(/['"]/g, "");   // strip stray quotes
+// /* ---------- GET  /api/reports?hospitalId=xxx ---------- */
+// router.get("/", async (req, res) => {
+//   try {
+//     let { hospitalId } = req.query;
+//     hospitalId = hospitalId?.replace(/['"]/g, "");
 
-    if (!mongoose.Types.ObjectId.isValid(hospitalId))
-      return res.status(400).json({ success: false, message: "Invalid hospitalId" });
+//     if (!mongoose.Types.ObjectId.isValid(hospitalId))
+//       return res.status(400).json({ success: false, message: "Invalid hospitalId" });
 
-    /* 2️⃣  fetch hospital */
-    const hospital = await Hospital.findById(hospitalId);
-    if (!hospital?.location?.coordinates?.length)
-      return res.status(404).json({ success: false, message: "Hospital location not found" });
+//     const hospital = await Hospital.findById(hospitalId);
+//     if (!hospital?.location?.coordinates?.length)
+//       return res.status(404).json({ success: false, message: "Hospital location not found" });
 
-    const hospCoords = hospital.location.coordinates;       // [lon, lat]
+//     const hospCoords = hospital.location.coordinates;       // [lon, lat]
 
-    /* 3️⃣  fetch accident reports */
-    const reports = await Report.find({});
+//     const reports = await Report.find({});
 
-    /* 4️⃣  enrich with distance */
-    const enriched = reports.map(r => {
-      const accCoords = r.location?.coordinates;
-      if (!accCoords) {
-        return { ...r.toObject(), distance: "Unknown" };
-      }
-      const dist = haversine(hospCoords, accCoords).toFixed(2) + " km";
-      return { ...r.toObject(), distance: dist };
-    });
+//     const enriched = reports.map(r => {
+//       const accCoords = r.location?.coordinates;
+//       if (!accCoords) {
+//         return { ...r.toObject(), distance: "Unknown" };
+//       }
+//       const dist = haversine(hospCoords, accCoords).toFixed(2) + " km";
+//       return { ...r.toObject(), distance: dist };
+//     });
 
-    return res.json({ success: true, reports: enriched });
-  } catch (err) {
-    console.error("Error fetching reports:", err);
-    return res.status(500).json({ success: false, message: "Failed to fetch reports" });
-  }
-});
+//     return res.json({ success: true, reports: enriched });
+//   } catch (err) {
+//     console.error("Error fetching reports:", err);
+//     return res.status(500).json({ success: false, message: "Failed to fetch reports" });
+//   }
+// });
 
-/* simple health‑check */
-router.get("/test", (_req, res) => res.send("✅ reportRoutes working"));
+// router.get("/test", (_req, res) => res.send(" reportRoutes working"));
 
+router.post("/create", hospiAuth, reportController.createReport);
+router.get("/", hospiAuth, reportController.getAllReports);
+router.get("/:id", hospiAuth, reportController.getReportById);
+router.put("/:id", hospiAuth, reportController.updateReport);
+router.delete("/:id", hospiAuth, reportController.deleteReport);
 
-
-
-const reportController = require("../controllers/reportsController.js");
-
-router.post("/", reportController.createReport);
-router.get("/", reportController.getAllReports);
-router.get("/:id", reportController.getReportById);
-router.put("/:id", reportController.updateReport);
-router.delete("/:id", reportController.deleteReport);
-
-module.exports = router;
+export default router;

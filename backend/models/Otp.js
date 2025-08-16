@@ -1,7 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+
 const OTPSchema = new mongoose.Schema({
   phone: String,
   otp: String,
-  expiresAt: Date
+  expiresAt: Date,
 });
-module.exports = mongoose.model('OTP', OTPSchema);
+
+export default mongoose.model("OTP", OTPSchema);

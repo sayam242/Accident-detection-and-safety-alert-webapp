@@ -1,44 +1,62 @@
-const express = require('express');
-const router = express.Router();
-require('dotenv').config();
-const twilio = require('twilio');
-const OTPModel = require('../models/Otp.js'); // You need to create this model
+import express from "express";
+import dotenv from "dotenv";
+import twilio from "twilio";
+import OTPModel from "../models/Otp.js"; // Make sure your Otp.js uses export default
 
-// const accountSid = 'ACc1fe262774aa192397b1c0c7c7e4d322';
-// const authToken = '185bd63ed774ff8df7780afb90940252';
-// const client = twilio(accountSid, authToken);
+dotenv.config();
+
+const router = express.Router();
+
+// Twilio setup (read from .env)
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = twilio(accountSid, authToken);
 
 // Send OTP
-router.post('/send-otp', async (req, res) => {
-  console.log("Sending OTP to:", req.body.phone);
-  const { phone } = req.body;
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+router.post("/send-otp", async (req, res) => {
+  try {
+    const { phone } = req.body;
+    console.log("Sending OTP to:", phone);
 
-  // Save OTP to DB
-  await OTPModel.create({ phone, otp, expiresAt: Date.now() + 5 * 60 * 1000 }); // 5 min expiry
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  // Send SMS
-  await client.messages.create({
-    body: `Your OTP is ${otp}`,
-    from: 'YOUR_TWILIO_PHONE_NUMBER',
-    to: `+91${phone}`
-  });
+    // Save OTP to DB
+    await OTPModel.create({
+      phone,
+      otp,
+      expiresAt: Date.now() + 5 * 60 * 1000, // expires in 5 minutes
+    });
 
-  res.json({ success: true });
-});
+    // Send via Twilio
+    await client.messages.create({
+      body: `Your OTP is ${otp}`,
+      from: process.env.TWILIO_PHONE_NUMBER, // set in .env
+      to: `+91${phone}`,
+    });
 
-// Verify OTP
-router.post('/verify-otp', async (req, res) => {
-  const { phone, otp } = req.body;
-  const record = await OTPModel.findOne({ phone, otp });
-
-  if (record && record.expiresAt > Date.now()) {
-    // Optionally, delete OTP after verification
-    await OTPModel.deleteOne({ _id: record._id });
-    res.json({ verified: true });
-  } else {
-    res.json({ verified: false });
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    res.status(500).json({ success: false, error: "Failed to send OTP" });
   }
 });
 
-module.exports = router;
+// Verify OTP
+router.post("/verify-otp", async (req, res) => {
+  try {
+    const { phone, otp } = req.body;
+    const record = await OTPModel.findOne({ phone, otp });
+
+    if (record && record.expiresAt > Date.now()) {
+      await OTPModel.deleteOne({ _id: record._id });
+      res.json({ verified: true });
+    } else {
+      res.json({ verified: false });
+    }
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    res.status(500).json({ verified: false, error: "Verification failed" });
+  }
+});
+
+export default router;

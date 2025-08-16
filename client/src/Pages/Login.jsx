@@ -28,7 +28,6 @@ export default function Login(){
   const handleSubmit = async(e) => {
   e.preventDefault();
     console.log(formData);
-    console.log("before call")
      try {
         const res = await axios.post( "http://localhost:3000/api/auth/login",
         formData);
@@ -76,7 +75,7 @@ export default function Login(){
                     <InputText label="PASSWORD" value={formData.password} name="password" type="password" onChange={handleChange}/>
                     <LoginButton myForm="loginForm" button="Login"/>
                     
-                    <p><a style={{color:"black"}} href="#">Forgot Password</a></p>
+                    <p>Don't Have Account? <a style={{color:"black"}} href="http://localhost:5173/create2">Create new</a></p>
                     
                 </form>
             </div>

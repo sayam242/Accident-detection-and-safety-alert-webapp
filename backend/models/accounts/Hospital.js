@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const hospitalSchema = new mongoose.Schema({
   hospitalname: {
@@ -14,19 +14,17 @@ const hospitalSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   location: {
     type: {
       type: String,
       enum: ["Point"],
-      default: "Point"
+      default: "Point",
     },
     coordinates: {
       type: [Number], // [longitude, latitude]
       required: true,
     },
   },
-
   createdAt: {
     type: Date,
     default: Date.now,
@@ -36,4 +34,4 @@ const hospitalSchema = new mongoose.Schema({
 // Optional: create 2dsphere index for geospatial queries
 hospitalSchema.index({ location: "2dsphere" });
 
-module.exports = mongoose.model("Hospital", hospitalSchema);
+export default mongoose.model("Hospital", hospitalSchema);

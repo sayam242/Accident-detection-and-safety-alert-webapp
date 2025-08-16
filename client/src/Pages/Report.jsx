@@ -43,6 +43,7 @@ export default function Report() {
             location: null,
             image: null,
         }))
+        setUserType("");
         setCapturedImage(null);
     };
 
@@ -212,7 +213,7 @@ const verifyOtp = async () => {
                     <div style={{ width: "100%", textAlign: "center" }}>
                         {!capturedImage && (
                             <button type="button" className="btn btn-secondary" onClick={openCamera}>
-                                Open Camera
+                                Click Photo
                             </button>
                         )}
                         {capturedImage && (

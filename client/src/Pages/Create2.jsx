@@ -22,6 +22,51 @@ export default function Create2(){
     })
      const [resetKey, setResetKey] = useState(0);
 
+
+    // Function to handel Submit....
+
+        const handleSubmit= async(event)=>{
+        event.preventDefault();
+            if (!AccountDetails.location) {
+                alert("Please select a location on the map.");
+                return;
+            }
+            try {
+                const res = await axios.post( "http://localhost:3000/api/auth/create2",
+                AccountDetails);
+
+                const data = res.data;
+
+            if (res.status === 201 || res.status === 200) {
+                alert("Hospital Registered!");
+                navigate("/login"); 
+            } else {
+                alert( data.message || "Registration failed");
+            }
+            }catch (err) {
+                console.error("Registration error:", err);
+
+                // Try to get backend error message safely
+                const errorMsg = err.response?.data?.message || "Registration failed. Please try again.";
+                alert(errorMsg);
+            }
+
+        console.log(AccountDetails);
+        setAccountDetails((curDetails)=>({
+        ...curDetails,
+            hospitalname:"",
+            email:"",
+            password:"",
+            location:null,
+        }))
+        setUserType("")
+        setResetKey(prev => prev + 1);
+
+    }
+
+
+    // Function to handle input changes i.e Hospital name, Email, Password.....
+
     const handleChange=(e)=>{
         const{name,value}=e.target;
         setAccountDetails((curDetails)=>({
@@ -29,6 +74,10 @@ export default function Create2(){
             [name]:value,
         }));
     }
+
+
+    // Function to handle location selection from map or current Location...
+
     const handleLoc = (coords) => {
         // if lat/lng structure received, convert to GeoJSON
         const location = coords.lat !== undefined && coords.lng !== undefined
@@ -46,46 +95,9 @@ export default function Create2(){
         setShowMap(false);
     };
 
-    const handleSubmit= async(event)=>{
-        event.preventDefault();
-        if (!AccountDetails.location) {
-            alert("Please select a location on the map.");
-            return;
-        }
-        console.log("DEBUG: Sending to backend", AccountDetails);
-            try {
-       const res = await axios.post( "http://localhost:3000/api/auth/create2",
-        AccountDetails);
 
-        const data = res.data;
 
-        if (res.status === 201 || res.status === 200) {
-            alert("Hospital Registered!");
-            navigate("/login"); 
-        } else {
-            alert( data.message || "Registration failed");
-        }
-        }catch (err) {
-            console.error("Registration error:", err);
-
-            // Try to get backend error message safely
-            const errorMsg = err.response?.data?.message || "Registration failed. Please try again.";
-            alert(errorMsg);
-            }
-
-        console.log(AccountDetails);
-        setAccountDetails((curDetails)=>({
-        ...curDetails,
-            hospitalname:"",
-            email:"",
-            password:"",
-            location:null,
-        }))
-        setUserType("")
-        setResetKey(prev => prev + 1);
-
-    }
-
+    // used for location selection dropdown...
 
     const locationHandler=(e)=>{
         const val = e.target.value;
@@ -112,6 +124,10 @@ export default function Create2(){
                     <InputText label="HOSPITAL NAME" name="hospitalname" value={AccountDetails.hospitalname} type="text" onChange={handleChange}/>
                     <InputText label="EMAIL" name="email" value={AccountDetails.email} type="email" onChange={handleChange}/>
                     <InputText label="PASSWORD" value={AccountDetails.password} name="password" type="password" onChange={handleChange}/>
+                    
+
+                    {/* if wish to get Phone No of hospital also as input ....  */}
+
                     {/* <div className="form-floating loginDivs">
                         <input type='text' required pattern="\d*" inputMode="numeric" maxLength={10} minLength={10} value={AccountDetails.contact || ""} style={{ textAlign: "left" }} className="form-control loginInputs no-spinner" id="floatingTextareacontact"
                         onChange={(e) => {
@@ -156,7 +172,7 @@ export default function Create2(){
 
         </div>
             {userType === "Use Current Location" && <CurrentLoc className="loginInputs" key={resetKey} sendLoc={handleLoc} />}
-            {/* {userType === "admin" && <LocationPicker sendLoc={handleLoc} />} */}
+
              <Modal show={showMap} onClose={() => setShowMap(false)}>
             <LocationPicker sendLoc={handleLoc} text="Select Hospital Location" />
             </Modal>

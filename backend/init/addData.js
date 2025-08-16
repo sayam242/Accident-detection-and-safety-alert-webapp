@@ -1,21 +1,20 @@
-const mongoose=require("mongoose");
-const sampleReports=require("./data.js");
-const Report=require("../models/accidents/Reports.js");
+import mongoose from "mongoose";
+import sampleReports from "./data.js";
+import Report from "../models/accidents/Reports.js";
 
-main().then(()=>{
-    console.log("connected to db")
-}).catch((err)=>{
-    console.log(err);
-})  
-
-async function main(){
-    mongoose.connect("mongodb://127.0.0.1:27017/adrs")
+async function main() {
+    try {
+        await mongoose.connect("mongodb://127.0.0.1:27017/adrs");
+        console.log("Connected to DB");
+    } catch (err) {
+        console.error(err);
+    }
 }
 
-const initDB=async()=>{
+const initDB = async () => {
     await Report.deleteMany({});
     await Report.insertMany(sampleReports);
-    console.log("data was initialised")
-
+    console.log("Data was initialised");
 };
-initDB();
+
+main().then(initDB);

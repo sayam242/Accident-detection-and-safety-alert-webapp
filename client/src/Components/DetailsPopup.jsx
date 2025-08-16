@@ -30,7 +30,7 @@ export default function DetailsPopup({ open, onClose, accident }) {
         <div className="grid grid-cols-4 gap-y-4 gap-x-2 text-center mb-6">
           <div>
             <div className="font-bold">Location</div>
-            <div>{accident.location.coordinates}</div>
+            <div>{accident.location?.coordinates?.join(", ")}</div>
           </div>
           <div>
             <div className="font-bold">Time</div>
@@ -60,7 +60,7 @@ export default function DetailsPopup({ open, onClose, accident }) {
             <div className="font-bold">Number</div>
             <div>{accident.number || "PB 65 XY 9087"}</div>
           </div>
-        </div>
+        </div>  
         {/* Action Buttons */}
         <div className="flex justify-between mt-4">
           <button className="border border-blue-500 text-blue-600 px-6 py-2 rounded-full font-semibold hover:bg-blue-50">

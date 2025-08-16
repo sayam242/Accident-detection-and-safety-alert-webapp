@@ -3,6 +3,7 @@ import { useEffect,useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine";
+import axios from "axios";
 
 
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -90,6 +91,10 @@ export default function MapPopup({ coords /* [lat, lng] */ }) {
       fetchAddress();
     }
   }, [coords]);
+
+  
+
+
 
   if (!coords || coords.length !== 2 || typeof coords[0] !== "number") {
     return <p>Invalid or missing coordinates.</p>;

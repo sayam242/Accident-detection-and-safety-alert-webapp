@@ -1,23 +1,25 @@
-const express   = require("express");
-const mongoose  = require("mongoose");
-const router    = express.Router();
+// detectedRoutes.mjs (or .js if "type": "module" in package.json)
+import express from "express";
+import mongoose from "mongoose";
 
+import Hospital from "../models/accounts/Hospital.js";
+import Detected from "../models/accidents/Detected.js";
 
-const Hospital = require("../models/accounts/Hospital");
-const Detected = require("../models/accidents/Detected");
+const router = express.Router();
 
-/* ---------- helper: Haversine in km ---------- */
+/* ---------- helper: Haversine in km ---------- */
 function haversine([lon1, lat1], [lon2, lat2]) {
   const R = 6371;
-  const toRad = d => (d * Math.PI) / 180;
+  const toRad = (d) => (d * Math.PI) / 180;
 
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
 
   const a =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLon / 2) ** 2;
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) ** 2;
 
   return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
@@ -25,25 +27,31 @@ function haversine([lon1, lat1], [lon2, lat2]) {
 /* ---------- GET  /api/reports?hospitalId=xxx ---------- */
 router.get("/", async (req, res) => {
   try {
-    /* 1️⃣  clean & validate ID */
+    // 1️⃣ Clean & validate ID
     let { hospitalId } = req.query;
-    hospitalId = hospitalId?.replace(/['"]/g, "");   // strip stray quotes
+    hospitalId = hospitalId?.replace(/['"]/g, ""); // strip stray quotes
 
-    if (!mongoose.Types.ObjectId.isValid(hospitalId))
-      return res.status(400).json({ success: false, message: "Invalid hospitalId" });
+    if (!mongoose.Types.ObjectId.isValid(hospitalId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid hospitalId" });
+    }
 
-    /* 2️⃣  fetch hospital */
+    // 2️⃣ Fetch hospital
     const hospital = await Hospital.findById(hospitalId);
-    if (!hospital?.location?.coordinates?.length)
-      return res.status(404).json({ success: false, message: "Hospital location not found" });
+    if (!hospital?.location?.coordinates?.length) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Hospital location not found" });
+    }
 
-    const hospCoords = hospital.location.coordinates;       // [lon, lat]
+    const hospCoords = hospital.location.coordinates; // [lon, lat]
 
-    /* 3️⃣  fetch accident reports */
+    // 3️⃣ Fetch accident reports
     const reports = await Detected.find({});
 
-    /* 4️⃣  enrich with distance */
-    const enriched = reports.map(r => {
+    // 4️⃣ Enrich with distance
+    const enriched = reports.map((r) => {
       const accCoords = r.location?.coordinates;
       if (!accCoords) {
         return { ...r.toObject(), distance: "Unknown" };
@@ -55,11 +63,13 @@ router.get("/", async (req, res) => {
     return res.json({ success: true, reports: enriched });
   } catch (err) {
     console.error("Error fetching reports:", err);
-    return res.status(500).json({ success: false, message: "Failed to fetch reports" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch reports" });
   }
 });
 
-/* simple health‑check */
+/* simple health-check */
 router.get("/test", (_req, res) => res.send("✅ detectedRoutes working"));
 
-module.exports = router;
+export default router;

@@ -1,6 +1,5 @@
 import { useState,useEffect } from "react";
-import "../Views/Create2.css";
-import LocationPickerWithSearch from "./LocationPicker";
+
 
 export default function CurrentLoc({  sendLoc}){
 
