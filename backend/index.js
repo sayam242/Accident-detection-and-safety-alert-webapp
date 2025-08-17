@@ -20,7 +20,10 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
+
+// image size was larger than default limit thats why we increased it
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
 app.use("/api/auth", authRoutes);

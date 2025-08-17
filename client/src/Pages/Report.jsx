@@ -6,6 +6,8 @@ import LoginButton from "../Components/LoginButton.jsx";
 import CurrentLoc from "../Components/CurrentLoc.jsx"
 import LocationPicker from "../Components/LocationPicker.jsx"
 import Modal from "../Components/Modal.jsx";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 export default function Report() {
     const [userType, setUserType] = useState("");
@@ -23,6 +25,8 @@ export default function Report() {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
 
+    const navigate = useNavigate();
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setAccidentDetails((prev) => ({
@@ -34,6 +38,30 @@ export default function Report() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         // You can now send AccidentDetails.image (base64 or blob) to your backend
+
+         if (!AccidentDetails.location) {
+                alert("Please select a location on the map.");
+                return;
+            }
+            try {
+                const res = await axios.post( "http://localhost:3000/api/reports/create",
+                AccidentDetails);
+
+                const data = res.data;
+
+            if (res.status === 201 || res.status === 200) {
+                alert("Report Registered!");
+                navigate("/"); 
+            } else {
+                alert( data.message || "Registration failed");
+            }
+            }catch (err) {
+                console.error("Registration error:", err);
+
+                // Try to get backend error message safely
+                const errorMsg = err.response?.data?.message || "Registration failed. Please try again.";
+                alert(errorMsg);
+            }
         console.log(AccidentDetails);
         setAccidentDetails((curData) => ({
             ...curData,
@@ -47,13 +75,24 @@ export default function Report() {
         setCapturedImage(null);
     };
 
-    const handleLoc = (e) => {
+     const handleLoc = (coords) => {
+        // if lat/lng structure received, convert to GeoJSON
+        const location = coords.lat !== undefined && coords.lng !== undefined
+            ? {
+                type: "Point",
+                coordinates: [coords.lng, coords.lat], // longitude first
+            }
+            : coords; // already in correct format
+
         setAccidentDetails((curDetails) => ({
             ...curDetails,
-            location: e,
+            location,
         }));
+
         setShowMap(false);
-    }
+    };
+
+
 
     const locationHandler = (e) => {
         const val = e.target.value;
@@ -119,6 +158,11 @@ const [otp, setOtp] = useState('');
 const [otpVerified, setOtpVerified] = useState(false);
 
 const sendOtp = async () => {
+    if (!AccidentDetails.contact || AccidentDetails.contact.length < 10) {
+  alert("Please enter a valid phone number");
+  return;
+}
+
   const response = await fetch("http://localhost:3000/api/otp/send-otp", {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -129,7 +173,7 @@ const sendOtp = async () => {
 };
 
 const verifyOtp = async () => {
-  const response = await fetch('/api/verify-otp', {
+  const response = await fetch('http://localhost:3000/api/otp/verify-otp', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: AccidentDetails.contact, otp })

@@ -1,20 +1,31 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
 import twilio from "twilio";
 import OTPModel from "../models/Otp.js"; // Make sure your Otp.js uses export default
 
-dotenv.config();
 
 const router = express.Router();
+console.log("TWILIO_ACCOUNT_SID:", process.env.TWILIO_ACCOUNT_SID);
+console.log("TWILIO_AUTH_TOKEN:", process.env.TWILIO_AUTH_TOKEN);
 
 // Twilio setup (read from .env)
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+console.log('Twilio SID:', accountSid); // Should start with 'AC'
+console.log('Twilio Token:', authToken); // Should be a string, not undefined
+
 const client = twilio(accountSid, authToken);
+
+
 
 // Send OTP
 router.post("/send-otp", async (req, res) => {
   try {
+    console.log('Twilio SID:', accountSid); // Should start with 'AC'
+console.log('Twilio Token:', authToken); // Should be a string, not undefined
+
     const { phone } = req.body;
     console.log("Sending OTP to:", phone);
 

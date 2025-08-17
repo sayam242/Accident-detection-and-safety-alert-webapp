@@ -59,7 +59,7 @@ function haversine([lon1, lat1], [lon2, lat2]) {
 
 // router.get("/test", (_req, res) => res.send(" reportRoutes working"));
 
-router.post("/create", hospiAuth, reportController.createReport);
+router.post("/create", reportController.createReport);
 router.get("/", hospiAuth, reportController.getAllReports);
 router.get("/:id", hospiAuth, reportController.getReportById);
 router.put("/:id", hospiAuth, reportController.updateReport);

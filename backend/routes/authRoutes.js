@@ -66,10 +66,10 @@ router.post("/login", async (req, res) => {
 
     // 3️⃣ (Optional) create a JWT
     const token = jwt.sign(
-      { id: hospital._id, role: "hospital" },
-      SECRET,
-      { expiresIn: "7d" }
-    );
+  { id: hospital._id, role: "hospital" },
+  process.env.JWT_SECRET,
+  { algorithm: "HS256", expiresIn: "7d" }
+);
 
     // 4️⃣ Respond with JSON
     res.json({
@@ -89,7 +89,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/test", (req, res) => {
-  console.log('JWT secret:', process.env.JWT_SECRET);
+  console.log('JWT secret:', process.env.JWT_SECRET); 
   res.send("Auth route working")});
 
 export default router;
