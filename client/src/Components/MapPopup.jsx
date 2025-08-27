@@ -1,14 +1,12 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine";
-import axios from "axios";
 
-
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerRetina from 'leaflet/dist/images/marker-icon-2x.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerRetina from "leaflet/dist/images/marker-icon-2x.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -17,61 +15,51 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-function Routing({ dest }) {
+// Routing Component (Hospital -> Accident)
+function Routing({ dest, hospiloc }) {
   const map = useMap();
 
   useEffect(() => {
-    if (!map || !dest) return;
+    if (!map || !dest || !hospiloc) return;
 
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        const { latitude, longitude } = coords;
+    // dest = accident [lng, lat]
+    // hospiloc = hospital [lng, lat]
 
-        const routingControl = L.Routing.control({
-          waypoints: [
-            L.latLng(latitude,  longitude),   // current
-            L.latLng(dest[1],   dest[0])      // accident
-          ],
+    const routingControl = L.Routing.control({
+      waypoints: [
+        L.latLng(hospiloc[1], hospiloc[0]), // Hospital
+        L.latLng(dest[1], dest[0])          // Accident
+      ],
 
-          /***  HIDE the floating panel  ***/
-          show      : false,                 // don’t create itinerary UI
-          collapsible: false,                // (safety)
+      show: false,
+      collapsible: false,
+      addWaypoints: false,
+      draggableWaypoints: false,
+      routeWhileDragging: false,
 
-          /***  DISABLE any interaction  ***/
-          addWaypoints        : false,       // no click‑to‑add
-          draggableWaypoints  : false,       // no drag markers
-          routeWhileDragging  : false,
-          /***  OPTIONAL: thinner red line  ***/
-          lineOptions: {
-            styles: [{ color: '#e03232', weight: 6 }]
-          }
+      lineOptions: {
+        styles: [{ color: "#e03232", weight: 6 }]
+      }
+    }).addTo(map);
 
-          
-        }).addTo(map);
-        
-        
+    // remove floating panel if any
+    const panel = document.querySelector(".leaflet-routing-container");
+    if (panel) panel.remove();
 
-        /* absolutely remove leftover DOM (older versions) */
-        const panel = document.querySelector('.leaflet-routing-container');
-        if (panel) panel.remove();
-      },
-      err => console.error('Geolocation error:', err)
-    );
-  }, [map, dest]);
+    return () => map.removeControl(routingControl); // cleanup
+  }, [map, dest, hospiloc]);
 
   return null;
 }
 
-
-
-export default function MapPopup({ coords /* [lat, lng] */ }) {
-
+export default function MapPopup({ coords, hospiloc }) {
+  console.log("hospital location in popup", hospiloc);
   const [address, setAddress] = useState("");
 
   useEffect(() => {
     const fetchAddress = async () => {
       try {
-        const [lng, lat] = coords; // your coords are [lng, lat]
+        const [lng, lat] = coords; // accident coords are [lng, lat]
         const response = await fetch(
           `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
         );
@@ -92,48 +80,66 @@ export default function MapPopup({ coords /* [lat, lng] */ }) {
     }
   }, [coords]);
 
-  
-
-
-
   if (!coords || coords.length !== 2 || typeof coords[0] !== "number") {
-    return <p>Invalid or missing coordinates.</p>;
+    return <p>Invalid or missing accident coordinates.</p>;
   }
 
-  const position = { lat: coords[1], lng: coords[0] };
+  if (!hospiloc) {
+  return <p>Invalid or missing hospital coordinates.</p>;
+}
+
+let hospitalCoords;
+if (typeof hospiloc === "string") {
+  // Convert "76.7557632,30.72" → [76.7557632, 30.72]
+  hospitalCoords = hospiloc.split(",").map(Number);
+} else {
+  hospitalCoords = hospiloc;
+}
+
+if (!hospitalCoords || hospitalCoords.length !== 2 || isNaN(hospitalCoords[0])) {
+  return <p>Invalid hospital coordinates format.</p>;
+}
+
+const accidentPos = { lat: coords[1], lng: coords[0] };
+const hospitalPos = { lat: hospitalCoords[1], lng: hospitalCoords[0] };
+console.log("Accident position:", accidentPos);
+console.log("Hospital position:", hospitalPos);
+
 
   return (
     <div className="w-full h-auto rounded-lg overflow-hidden">
-  
-       {/*  Address - make background and padding visible */}
-  {address && (
-    <div className="bg-white text-sm text-gray-800 font-medium py-1 px-2 mb-2 shadow-sm rounded text-center">
-       {address}
-    </div>
-  )}
-    <div className="w-full h-[189px] rounded-lg overflow-hidden">
-      
-      <MapContainer
-        center={position}
-        zoom={15}
-        scrollWheelZoom={false}
-        style={{ height: "100%", width: "100%" }}
-      >
+      {address && (
+        <div className="bg-white text-sm text-gray-800 font-medium py-1 px-2 mb-2 shadow-sm rounded text-center">
+          {address}
+        </div>
+      )}
 
-        <TileLayer
-          attribution='&copy; OpenStreetMap contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <Marker position={position}>
-          <Popup>{`${coords[0]}, ${coords[1]}`}</Popup>
-        </Marker>
-        {/* route from current location to accident */}
-        <Routing dest={coords} />
-      </MapContainer>
+      <div className="w-full h-[189px] rounded-lg overflow-hidden">
+        <MapContainer
+          center={accidentPos}
+          zoom={15}
+          scrollWheelZoom={false}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
 
-      
+          {/* Accident Marker */}
+          <Marker position={accidentPos}>
+            <Popup>Accident Location</Popup>
+          </Marker>
 
-    </div>
+          {/* Hospital Marker */}
+          <Marker position={hospitalPos}>
+            <Popup>Hospital Location</Popup>
+          </Marker>
+
+          {/* Route from Hospital → Accident */}
+          <Routing dest={coords} hospiloc={hospitalCoords} />
+        </MapContainer>
+      </div>
     </div>
   );
 }

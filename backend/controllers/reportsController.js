@@ -1,7 +1,7 @@
 // controllers/reportsController.js
 import Report from "../models/accidents/Reports.js";
 import imagekit from "../config/imagekit.js";
-
+import Responded from "../models/accidents/Responded.js";
 export const createReport = async (req, res) => {
   try {
     const { name, condition, contact, image, location } = req.body;
@@ -99,12 +99,35 @@ export const updateReport = async (req, res) => {
 
 export const deleteReport = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedReport = await Report.findByIdAndDelete(id);
-    if (!deletedReport) {
+    const { id } = req.params;   // ✅ match your route /delete/:id
+    const hospital = req.hospital; // ✅ comes from hospiAuth middleware
+
+    const report = await Report.findById(id);
+    if (!report) {
       return res.status(404).json({ success: false, message: "Report not found" });
     }
-    return res.status(200).json({ success: true, message: "Report deleted successfully" });
+
+    // ✅ Create responded entry
+    const responded = new Responded({
+      name: report.name,
+      contact: report.contact,
+      severity: report.severity,
+      location: report.location,
+      image: report.image,
+      hospitalName: hospital.hospitalname,
+      hospitalEmail: hospital.email,
+    });
+    console.log( responded);
+    await responded.save();
+
+    // ✅ Delete report after saving to responded
+    await Report.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Report moved to Responded and deleted successfully",
+      responded,
+    });
   } catch (error) {
     console.error("Error deleting report:", error);
     return res.status(500).json({ success: false, message: "Failed to delete report" });

@@ -16,7 +16,7 @@ const LandingPage = () => {
         navigate("/login");
     };
     const handleCreate=()=>{
-        navigate("/create2");
+        navigate("/signup");
     };
     const handleRepot=()=>{
         navigate("/report");

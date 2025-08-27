@@ -5,33 +5,48 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 
-// Import route files
+// Routes
 import authRoutes from "./routes/authRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import detectedRoutes from "./routes/detectedRoutes.js";
+import respondedRoutes from "./routes/respondedRoutes.js";
 import otpRoutes from "./routes/otpRoutes.js";
+import pdfRoutes from "./routes/pdfRoutes.js";
 
 const app = express();
 
-// Middleware
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+// CORS first
+app.use(cors({
+origin: "http://localhost:5173",
+methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+allowedHeaders: ["Content-Type", "Authorization"],
+credentials: false
+}));
 
-// image size was larger than default limit thats why we increased it
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// Preflight helper and Vary header
+app.use((req, res, next) => {
+res.header("Vary", "Origin");
+if (req.method === "OPTIONS") {
+res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+return res.sendStatus(204);
+}
+next();
+});
+/* ------------ Body parsers ------------ */
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Routes
+/* ------------ API routes ------------ */
 app.use("/api/auth", authRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/detected", detectedRoutes);
+app.use("/api/responded", respondedRoutes);
 app.use("/api/otp", otpRoutes);
+app.use("/api/pdf", pdfRoutes); // final PDF URL: /api/pdf/report/:id
 
-// MongoDB connection
+/* ------------ MongoDB ------------ */
 mongoose
   .connect("mongodb://127.0.0.1:27017/adrs", {
     useNewUrlParser: true,
@@ -40,7 +55,8 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Start server
-app.listen(3000, () => {
-  console.log("Listening to port 3000");
+/* ------------ Server ------------ */
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Listening to port ${PORT}`);
 });

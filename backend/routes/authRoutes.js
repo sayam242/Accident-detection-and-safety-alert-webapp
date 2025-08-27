@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken"; // optional – only if you want JWT
 import Hospital from "../models/accounts/Hospital.js"; // note: .js extension in ESM
 
 const router = express.Router();
-console.log('JWT secret:', process.env.JWT_SECRET);
 const SECRET = process.env.JWT_SECRET; // keep this in env vars in production
 
 
@@ -63,13 +62,15 @@ router.post("/login", async (req, res) => {
         .status(401)
         .json({ success: false, message: "Invalid password" });
     }
-
+    console.log("hospital logged in:", hospital.location);
+    
     // 3️⃣ (Optional) create a JWT
     const token = jwt.sign(
   { id: hospital._id, role: "hospital" },
   process.env.JWT_SECRET,
   { algorithm: "HS256", expiresIn: "7d" }
 );
+
 
     // 4️⃣ Respond with JSON
     res.json({

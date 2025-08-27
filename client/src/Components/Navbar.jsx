@@ -14,8 +14,8 @@ function Navbar() {
     "flex items-center space-x-2 px-4 py-1 rounded-full font-semibold transition";
 
     useEffect(() => {
-    if (location.pathname.includes("detected")) {
-      setActive("detected");
+    if (location.pathname.includes("responded")) {
+      setActive("responded");
     } else if (location.pathname.includes("reported")) {
       setActive("reported");
     }
@@ -38,15 +38,15 @@ function Navbar() {
   <div className="p-1 flex bg-gray-500 rounded-full  items-center">
     <div className={
           base +
-          (active === "detected"? " bg-white text-gray-500":" bg-transparent text-white/70")
+          (active === "responded"? " bg-white text-gray-500":" bg-transparent text-white/70")
         }
         style={{ cursor: "pointer" }}
         onClick={() => {
-          setActive("detected");
-          navigate("/detected");
+          setActive("responded");
+          navigate("/responded");
         }}>
-          <img className='h-5 w-5' src={active === 'detected' ? wifi_icon_g : wifi_icon_w}alt="" />
-          <button className="px-2 py-1">Detected</button>
+          <img className='h-5 w-5' src={active === 'responded' ? wifi_icon_g : wifi_icon_w}alt="" />
+          <button className="px-2 py-1">Responded</button>
     </div>
     <div 
     className={

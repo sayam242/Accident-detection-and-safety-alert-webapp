@@ -42,7 +42,11 @@ export default function Login(){
         console.log("id is",_id);
 
         localStorage.setItem("hospitalId", _id);
-        if (token) localStorage.setItem("token", token);
+        if (token){
+        console.log("Token saved:", token);}
+        localStorage.setItem("token", token);
+        localStorage.setItem("hospitalLocation", hospital.location.coordinates);
+        console.log("Hospital location saved:", hospital.location.coordinates);
         console.log("Saved hospitalId:", localStorage.getItem("hospitalId"));
         alert("✅ Login successful");
         navigate("/reported");
@@ -75,7 +79,7 @@ export default function Login(){
                     <InputText label="PASSWORD" value={formData.password} name="password" type="password" onChange={handleChange}/>
                     <LoginButton myForm="loginForm" button="Login"/>
                     
-                    <p>Don't Have Account? <a style={{color:"black"}} href="http://localhost:5173/create2">Create new</a></p>
+                    <p>Don't Have Account? <a style={{color:"black"}} href="http://localhost:5173/signup">Create new</a></p>
                     
                 </form>
             </div>
