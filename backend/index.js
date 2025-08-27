@@ -48,9 +48,9 @@ app.use("/api/pdf", pdfRoutes); // final PDF URL: /api/pdf/report/:id
 
 /* ------------ MongoDB ------------ */
 mongoose
-  .connect("mongodb://127.0.0.1:27017/adrs", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  .connect(process.env.MONGODB_URI, {
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
   })
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
