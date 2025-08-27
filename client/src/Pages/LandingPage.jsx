@@ -1,13 +1,13 @@
 import React from 'react'
 import {useNavigate} from "react-router-dom"; 
 import '../Views/LandingPage.css'
-import CarCrash from '../Assets/CarCrash.png'
-import cloud from '../Assets/cloud.png'
-import connection from '../Assets/connection.png'
-import message from '../Assets/message.png'
-import wifi from '../Assets/wifi.png'
-import sensor from '../Assets/sensor.png'
-import location from '../Assets/location.png'   
+import CarCrash from '../assets/CarCrash.png'
+import cloud from '../assets/cloud.png'
+import connection from '../assets/connection.png'
+import message from '../assets/message.png'
+import wifi from '../assets/wifi.png'
+import sensor from '../assets/sensor.png'
+import location from '../assets/location.png'   
 
 
 const LandingPage = () => {
