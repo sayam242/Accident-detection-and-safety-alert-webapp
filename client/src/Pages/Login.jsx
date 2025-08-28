@@ -43,8 +43,8 @@ export default function Login(){
 
         localStorage.setItem("hospitalId", _id);
         if (token){
-        console.log("Token saved:", token);}
         localStorage.setItem("token", token);
+        console.log("Token saved:", token);}
         localStorage.setItem("hospitalLocation", hospital.location.coordinates);
         console.log("Hospital location saved:", hospital.location.coordinates);
         console.log("Saved hospitalId:", localStorage.getItem("hospitalId"));

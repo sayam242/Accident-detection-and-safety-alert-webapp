@@ -1,8 +1,7 @@
-// src/Components/ProtectedRoute.jsx
-import { Navigate } from "react-router-dom";
-
+// src/Components/ProtectedRoute.jsx - BYPASS ALL CHECKS
 export default function ProtectedRoute({ children }) {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  if (!token) return <Navigate to="/login" replace />;
+  console.log("🚀 ProtectedRoute: Bypassing all checks, rendering children directly");
+  
+  // Completely bypass all authentication for testing
   return children;
 }

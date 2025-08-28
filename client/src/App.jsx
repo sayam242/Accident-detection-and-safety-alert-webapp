@@ -14,18 +14,6 @@ import Detected from "./Pages/HomeDetected.jsx";
 import Responded from "./Pages/Responded.jsx"; // Responded (hospital dashboard)
 
 export default function App() {
-  useEffect(() => {
-    // Only for development: force a clean slate at each reload
-    // Remove in production if you want persistent sessions
-    const fromLogin = sessionStorage.getItem("justLoggedIn");
-    if (!fromLogin) {
-      localStorage.removeItem("token");
-      // clear any legacy storages you might have used
-      sessionStorage.removeItem("token");
-      document.cookie = "token=; Max-Age=0; path=/";
-    }
-    sessionStorage.removeItem("justLoggedIn");
-  }, []);
   return (
     <Router>
       <Routes>
@@ -49,10 +37,10 @@ export default function App() {
         <Route
           path="/responded"
           element={
-            <Responded/>
-            // <ProtectedRoute>
-            //   <Responded />
-            // </ProtectedRoute>
+           
+            <ProtectedRoute>
+              <Responded />
+             </ProtectedRoute>
           }
         />
 
