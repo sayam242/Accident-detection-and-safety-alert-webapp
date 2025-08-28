@@ -32,7 +32,7 @@ function Navbar() {
   
   <div className="flex items-center space-x-2">
     <span className="w-3 h-3 bg-red-600 rounded-full"></span>
-    <span className="text-2xl font-bold text-gray-800 tracking-wide">ADRS</span>
+    <span className="text-2xl font-bold text-gray-800 tracking-wide">VIGILANT</span>
   </div>
 
   <div className="p-1 flex bg-gray-500 rounded-full  items-center">
