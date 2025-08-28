@@ -45,7 +45,7 @@ export default function Report() {
             }
             try {
                 const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
-                const res = await axios.post( `${baseURL}/api/reports/creat`,
+                const res = await axios.post( `${baseURL}/api/reports/create`,
                 AccidentDetails);
 
                 const data = res.data;
