@@ -17,7 +17,7 @@ const app = express();
 
 // CORS first
 app.use(cors({
-origin: "http://localhost:5173",
+origin: "https://vigilant-live.vercel.app",
 methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
 allowedHeaders: ["Content-Type", "Authorization"],
 credentials: false
@@ -27,7 +27,7 @@ credentials: false
 app.use((req, res, next) => {
 res.header("Vary", "Origin");
 if (req.method === "OPTIONS") {
-res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+res.header("Access-Control-Allow-Origin", "https://vigilant-live.vercel.app");
 res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
 res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 return res.sendStatus(204);
@@ -47,7 +47,7 @@ app.use("/api/otp", otpRoutes);
 app.use("/api/pdf", pdfRoutes); // final PDF URL: /api/pdf/report/:id
 
 /* ------------ MongoDB ------------ */
-app.get("/", (_req, res) => res.send("API is running..."));
+// app.get("/", (_req, res) => res.send("API is running..."));
 mongoose
   .connect(process.env.MONGODB_URI, {
     // useNewUrlParser: true,

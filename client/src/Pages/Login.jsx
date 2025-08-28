@@ -79,7 +79,7 @@ export default function Login(){
                     <InputText label="PASSWORD" value={formData.password} name="password" type="password" onChange={handleChange}/>
                     <LoginButton myForm="loginForm" button="Login"/>
                     
-                    <p>Don't Have Account? <a style={{color:"black"}} href="http://localhost:5173/signup">Create new</a></p>
+                    <p>Don't Have Account? <a style={{color:"black"}} href="https://vigilant-live.vercel.app/signup">Create new</a></p>
                     
                 </form>
             </div>
