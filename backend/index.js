@@ -17,7 +17,7 @@ const app = express();
 
 // CORS first
 app.use(cors({
-origin: "https://vigilant-live.vercel.app",
+origin: "https://www.vigilantlive.in",
 methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
 allowedHeaders: ["Content-Type", "Authorization"],
 credentials: false
@@ -27,7 +27,7 @@ credentials: false
 app.use((req, res, next) => {
 res.header("Vary", "Origin");
 if (req.method === "OPTIONS") {
-res.header("Access-Control-Allow-Origin", "https://vigilant-live.vercel.app");
+res.header("Access-Control-Allow-Origin", "https://www.vigilantlive.in");
 res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
 res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 return res.sendStatus(204);
