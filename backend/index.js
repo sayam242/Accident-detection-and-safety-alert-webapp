@@ -47,7 +47,7 @@ app.use("/api/otp", otpRoutes);
 app.use("/api/pdf", pdfRoutes); // final PDF URL: /api/pdf/report/:id
 
 /* ------------ MongoDB ------------ */
-// app.get("/", (_req, res) => res.send("API is running..."));
+app.get("/", (_req, res) => res.send("API is running..."));
 mongoose
   .connect(process.env.MONGODB_URI, {
     // useNewUrlParser: true,
