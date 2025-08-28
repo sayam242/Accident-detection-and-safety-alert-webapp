@@ -57,7 +57,7 @@ export default function DetailsPopup({ open, onClose, accident, hospiloc, token 
 const alothandler = async () => {
   try {
     const res = await fetch(
-      `http://localhost:3000/api/reports/${accident._id}`,
+      `${backend_URL}/api/reports/${accident._id}`,
       {
         method: "DELETE",
         headers: {

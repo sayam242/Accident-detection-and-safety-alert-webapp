@@ -41,7 +41,7 @@ export default function Reported() {
 
     const fetchReports = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/reports", {
+        const res = await axios.get(`${backend_URL}/api/reports`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const list = res.data?.reports || [];

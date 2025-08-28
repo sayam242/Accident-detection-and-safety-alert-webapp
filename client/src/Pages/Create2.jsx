@@ -32,7 +32,7 @@ export default function Create2(){
                 return;
             }
             try {
-                const res = await axios.post( "http://localhost:3000/api/auth/create2",
+                const res = await axios.post( `${backend_URL}/api/auth/create2`,
                 AccountDetails);
 
                 const data = res.data;

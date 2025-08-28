@@ -27,7 +27,7 @@ export default function Responded() {
           return;
         }
 
-        const res = await fetch("http://localhost:3000/api/responded/my", {
+        const res = await fetch(`${backend_URL}/api/responded/my`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

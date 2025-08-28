@@ -29,7 +29,7 @@ export default function Login(){
   e.preventDefault();
     console.log(formData);
      try {
-        const res = await axios.post( "http://localhost:3000/api/auth/login",
+        const res = await axios.post( `${backend_URL}/api/auth/login`,
         formData);
         const data = res.data;
         console.log("after api call")

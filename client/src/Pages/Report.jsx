@@ -44,7 +44,7 @@ export default function Report() {
                 return;
             }
             try {
-                const res = await axios.post( "http://localhost:3000/api/reports/create",
+                const res = await axios.post( `${backend_URL}/api/reports/creat`,
                 AccidentDetails);
 
                 const data = res.data;
@@ -163,7 +163,7 @@ const sendOtp = async () => {
   return;
 }
 
-  const response = await fetch("http://localhost:3000/api/otp/send-otp", {
+  const response = await fetch(`${backend_URL}/api/otp/send-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: AccidentDetails.contact })
@@ -173,7 +173,7 @@ const sendOtp = async () => {
 };
 
 const verifyOtp = async () => {
-  const response = await fetch('http://localhost:3000/api/otp/verify-otp', {
+  const response = await fetch(`${backend_URL}/api/otp/verify-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: AccidentDetails.contact, otp })
