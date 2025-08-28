@@ -41,7 +41,8 @@ export default function Reported() {
 
     const fetchReports = async () => {
       try {
-        const res = await axios.get(`${backend_URL}/api/reports`, {
+        const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
+        const res = await axios.get(`${baseURL}/api/reports`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const list = res.data?.reports || [];

@@ -44,7 +44,8 @@ export default function Report() {
                 return;
             }
             try {
-                const res = await axios.post( `${backend_URL}/api/reports/creat`,
+                const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
+                const res = await axios.post( `${baseURL}/api/reports/creat`,
                 AccidentDetails);
 
                 const data = res.data;
@@ -162,8 +163,8 @@ const sendOtp = async () => {
   alert("Please enter a valid phone number");
   return;
 }
-
-  const response = await fetch(`${backend_URL}/api/otp/send-otp`, {
+    const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
+  const response = await fetch(`${baseURL}/api/otp/send-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: AccidentDetails.contact })
@@ -173,7 +174,8 @@ const sendOtp = async () => {
 };
 
 const verifyOtp = async () => {
-  const response = await fetch(`${backend_URL}/api/otp/verify-otp`, {
+    const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
+  const response = await fetch(`${baseURL}/api/otp/verify-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ phone: AccidentDetails.contact, otp })

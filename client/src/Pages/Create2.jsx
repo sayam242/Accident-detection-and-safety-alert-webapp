@@ -32,7 +32,8 @@ export default function Create2(){
                 return;
             }
             try {
-                const res = await axios.post( `${backend_URL}/api/auth/create2`,
+                const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
+                const res = await axios.post( `${baseURL}/api/auth/create2`,
                 AccountDetails);
 
                 const data = res.data;

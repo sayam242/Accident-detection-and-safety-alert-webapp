@@ -56,8 +56,9 @@ export default function DetailsPopup({ open, onClose, accident, hospiloc, token 
 
 const alothandler = async () => {
   try {
+    const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
     const res = await fetch(
-      `${backend_URL}/api/reports/${accident._id}`,
+      `${baseURL}/api/reports/${accident._id}`,
       {
         method: "DELETE",
         headers: {

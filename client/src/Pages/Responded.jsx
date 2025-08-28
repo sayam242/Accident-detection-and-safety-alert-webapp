@@ -26,8 +26,8 @@ export default function Responded() {
           navigate("/login", { replace: true });
           return;
         }
-
-        const res = await fetch(`${backend_URL}/api/responded/my`, {
+        const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
+        const res = await fetch(`${baseURL}/api/responded/my`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
