@@ -155,6 +155,15 @@ export default function Reported() {
                       {accident.distanceKm != null ? `${accident.distanceKm} km` : "Unknown"}
                     </td>
                     <td className="py-3 px-6 text-center align-middle">
+                      <span
+                        className={`inline-block text-[10px] px-2 py-1 rounded-full mb-1 ${
+                          accident.reportedBy === "device"
+                            ? "bg-purple-100 text-purple-700 border border-purple-300"
+                            : "bg-gray-100 text-gray-600 border border-gray-300"
+                        }`}
+                      >
+                        {accident.reportedBy === "device" ? "Reported by Device" : "Reported by User"}
+                      </span>
                       <button
                         onClick={() => handleMoreDetails(accident)}
                         className="px-3 py-1 rounded-full border border-blue-300 text-blue-700 bg-blue-50 text-xs font-semibold hover:bg-blue-100 transition"

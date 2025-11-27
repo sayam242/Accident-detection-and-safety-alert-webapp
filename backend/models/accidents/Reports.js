@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
 
+// ⬇️ Put the URL/path of that chassis image here
+const DEVICE_PLACEHOLDER_IMAGE =
+  "https://drive.google.com/file/d/1dDwifbkz3eZAs3yX3zHRwUWPd2_LxnA6/view?usp=sharing"; 
+
 const reportSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -11,18 +15,19 @@ const reportSchema = new mongoose.Schema({
   },
   severity: {
     type: String,
-    enum: ["Critical", "Moderate", "Low"], // your 3 options
+    enum: ["Critical", "Moderate", "Low"],
     default: "Moderate",
   },
+
   location: {
     type: {
       type: String,
-      enum: ["Point"], // must be 'Point'
+      enum: ["Point"],
       required: true,
       default: "Point",
     },
     coordinates: {
-      type: [Number], // [longitude, latitude]
+      type: [Number], // [lng, lat]
       required: true,
       validate: {
         validator: (v) => v.length === 2,
@@ -30,10 +35,28 @@ const reportSchema = new mongoose.Schema({
       },
     },
   },
+
+  // 👇 NEW FIELD: who reported this?
+  reportedBy: {
+    type: String,
+    enum: ["webapp", "device"],
+    default: "webapp",
+  },
+
+  // 👇 image is required only for webapp, and gets a default for device
   image: {
     type: String,
-    required: true,
+    required: function () {
+      return this.reportedBy === "webapp";
+    },
+    default: function () {
+      if (this.reportedBy === "device") {
+        return DEVICE_PLACEHOLDER_IMAGE;
+      }
+      return undefined; // webapp must provide its own image
+    },
   },
+
   status: {
     type: String,
     enum: ["Responded", "Pending", "Cancelled"],
@@ -44,7 +67,6 @@ const reportSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-
 
 reportSchema.index({ location: "2dsphere" });
 

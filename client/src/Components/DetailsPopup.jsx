@@ -133,7 +133,12 @@ const alothandler = async () => {
         </div>  
          <div className="grid grid-cols-2 gap-y-4 gap-x-40 text-left">
             <p><b>Reported BY: </b>{accident.name}</p>
-            <p><b>Contact no: </b>{accident.contact}</p>
+            <p><b>Contact no: </b>{accident.contact}</p>\
+            <p>
+              <b>Reported Via: </b>
+              {accident.reportedBy === "device" ? "Device" : "Web App"}
+            </p>
+
           </div>
         {/* Action Buttons */}
         <div className="justify-between mt-4">

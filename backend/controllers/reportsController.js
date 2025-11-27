@@ -23,6 +23,7 @@ export const createReport = async (req, res) => {
         type: "Point",
         coordinates: location.coordinates,
       },
+      reportedBy: "webapp",
     });
 
     return res.status(201).json({ success: true, message: "Report created successfully" });
