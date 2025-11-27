@@ -2,36 +2,67 @@
 import Report from "../models/accidents/Reports.js";
 import imagekit from "../config/imagekit.js";
 import Responded from "../models/accidents/Responded.js";
+const DEVICE_IMAGE =
+  "https://ik.imagekit.io/your_folder/device_chassis_image.jpg";  // replace with your ImageKit URL
+
 export const createReport = async (req, res) => {
   try {
-    const { name, condition, contact, image, location } = req.body;
-    if (!name || !contact || !image || !location) {
-      return res.status(400).json({ success: false, message: "Name, contact, image, and location are required" });
+    const { name, condition, contact, image, location, reportedBy } = req.body;
+
+    if (!name || !contact || !location) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, contact, and location are required",
+      });
     }
 
-    const uploadResponse = await imagekit.upload({
-      file: image,
-      fileName: `${Date.now()}.jpg`,
-    });
+    // --- Webapp: Image MUST be provided ---
+    if (reportedBy !== "device" && !image) {
+      return res.status(400).json({
+        success: false,
+        message: "Image is required for webapp reports",
+      });
+    }
+
+    let finalImageURL = null;
+
+    // --- If webapp: Upload the image ---
+    if (reportedBy !== "device") {
+      const uploadResponse = await imagekit.upload({
+        file: image,
+        fileName: `${Date.now()}.jpg`,
+      });
+      finalImageURL = uploadResponse.url;
+    } else {
+      // --- Device: Use placeholder image ---
+      finalImageURL = DEVICE_IMAGE;
+    }
 
     await Report.create({
       name,
       severity: condition,
       contact,
-      image: uploadResponse.url,
+      reportedBy: reportedBy || "webapp",
+      image: finalImageURL,
       location: {
         type: "Point",
         coordinates: location.coordinates,
       },
-      reportedBy: "webapp",
     });
 
-    return res.status(201).json({ success: true, message: "Report created successfully" });
+    return res.status(201).json({
+      success: true,
+      message: "Report created successfully",
+    });
   } catch (error) {
     console.error("Error creating report:", error);
-    return res.status(500).json({ success: false, message: "Failed to create report" });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create report",
+    });
   }
 };
+
 
 export const getAllReports = async (req, res) => {
   try {

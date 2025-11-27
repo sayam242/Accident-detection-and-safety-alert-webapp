@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 // ⬇️ Put the URL/path of that chassis image here
 const DEVICE_PLACEHOLDER_IMAGE =
-  "https://drive.google.com/file/d/1dDwifbkz3eZAs3yX3zHRwUWPd2_LxnA6/view?usp=sharing"; 
+  "https://ik.imagekit.io/sayam242/Detected.jpg"; 
 
 const reportSchema = new mongoose.Schema({
   name: {
