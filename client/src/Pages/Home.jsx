@@ -46,7 +46,14 @@ export default function Reported() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const list = res.data?.reports || [];
+
+        list.sort(
+          (a, b) =>
+            new Date(b.createdAt) - new Date(a.createdAt)
+        );
+
         setAccidentData(list);
+
       } catch (err) {
         const status = err?.response?.status;
         console.error("Failed to fetch accident data:", err?.response?.data || err.message);
