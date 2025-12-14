@@ -47,12 +47,14 @@ export default function Reported() {
         });
         const list = res.data?.reports || [];
 
-        list.sort(
-          (a, b) =>
-            new Date(b.createdAt) - new Date(a.createdAt)
-        );
+        list.sort((a, b) => {
+          const ta = new Date(a.timeDetected || a.createdAt).getTime();
+          const tb = new Date(b.timeDetected || b.createdAt).getTime();
+          return tb - ta; // newest first
+        });
 
         setAccidentData(list);
+
 
       } catch (err) {
         const status = err?.response?.status;
