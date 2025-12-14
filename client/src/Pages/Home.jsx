@@ -140,7 +140,7 @@ export default function Reported() {
                       </button>
                     </td>
                     <td className="py-3 px-6 text-center align-middle">
-                      {new Date(accident.timeDetected || accident.createdAt).toLocaleString()}
+                      {new Date(accident.createdAt).toLocaleString()}
                     </td>
                     <td className="py-3 px-6 text-center align-middle">
                       <span
