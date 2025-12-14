@@ -3,7 +3,7 @@ import Report from "../models/accidents/Reports.js";
 import imagekit from "../config/imagekit.js";
 import Responded from "../models/accidents/Responded.js";
 const DEVICE_IMAGE =
-  "https://ik.imagekit.io/your_folder/device_chassis_image.jpg";  // replace with your ImageKit URL
+  "https://ik.imagekit.io/qwykl2wxyq/WhatsApp%20Image%202025-12-12%20at%2013.52.57.jpeg";  // replace with your ImageKit URL
 
 export const createReport = async (req, res) => {
   try {
