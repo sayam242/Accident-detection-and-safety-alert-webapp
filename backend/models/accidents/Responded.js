@@ -42,14 +42,28 @@ const respondedSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  timeDetected: {
+    type: Date,
+    required: true,
+  },
   
   timeResponded: {
     type: Date,
     default: Date.now,
   },
+  ambulance: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Ambulance",
+},
+
+
 });
 
 
-respondedSchema.index({ location: "2dsphere" });
+respondedSchema.index(
+  { location: "2dsphere" },
+  { accident: 1 },
+  { unique: true }
+);
 
 export default mongoose.model("Responded", respondedSchema);

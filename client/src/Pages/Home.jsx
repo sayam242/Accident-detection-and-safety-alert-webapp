@@ -5,6 +5,7 @@ import Navbar from "../Components/Navbar";
 import DetailsPopup from "../Components/DetailsPopup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { socket } from "../socket";
 
 const severityColors = {
   Critical: "bg-red-100 text-red-600 border-red-300",
@@ -23,6 +24,8 @@ export default function Reported() {
   const navigate = useNavigate();
 
   // ✅ Check token on component mount
+
+  
   useEffect(() => {
    
     console.log("Retrieved token:", token);
@@ -34,12 +37,7 @@ export default function Reported() {
     setLoading(false);
   }, []); // Empty dependency array - runs only once on mount
   localStorage.setItem("token", token); // Ensure token is in localStorage
-
-  // ✅ Fetch accident reports when token is available
-  useEffect(() => {
-    if (!token) return; // Don't fetch if no token
-
-    const fetchReports = async () => {
+   const fetchReports = async () => {
       try {
         const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
         const res = await axios.get(`${baseURL}/api/reports`, {
@@ -48,8 +46,8 @@ export default function Reported() {
         const list = res.data?.reports || [];
 
         list.sort((a, b) => {
-          const ta = new Date(a.timeDetected || a.createdAt).getTime();
-          const tb = new Date(b.timeDetected || b.createdAt).getTime();
+          const ta = new Date(a.timeDetected).getTime();
+          const tb = new Date(b.timeDetected).getTime();
           return tb - ta; // newest first
         });
 
@@ -70,11 +68,41 @@ export default function Reported() {
         }
       }
     };
+  // ✅ Fetch accident reports when token is available
+ useEffect(() => {
+  if (!token) return;
+  fetchReports();
+}, [token]);
 
-    fetchReports();
-  }, [token, navigate]); // Runs when token changes
+useEffect(() => {
+  const handleNewAccident = (data) => {
+    console.log("🚨 new-accident event received:", data);
+    fetchReports(); // refetch from backend
+  };
 
-  const handleMoreDetails = (accident) => {
+  socket.on("new-accident", handleNewAccident);
+
+  return () => {
+    socket.off("new-accident", handleNewAccident);
+  };
+}, []);
+
+useEffect(() => {
+  const handleFinalized = ({ reportId }) => {
+    setAccidentData(prev =>
+      prev.filter(acc => acc._id !== reportId)
+    );
+  };
+
+  socket.on("report-finalized", handleFinalized);
+
+  return () => {
+    socket.off("report-finalized", handleFinalized);
+  };
+}, []);
+
+
+  const handleViewResponses = (accident) => {
     setSelectedAccident(accident);
     setModalOpen(true);
   };
@@ -149,7 +177,9 @@ export default function Reported() {
                       </button>
                     </td>
                     <td className="py-3 px-6 text-center align-middle">
-                      {new Date(accident.createdAt).toLocaleString()}
+                      {accident.timeDetected
+                        ? new Date(accident.timeDetected).toLocaleString()
+                        : "—"}
                     </td>
                     <td className="py-3 px-6 text-center align-middle">
                       <span
@@ -174,10 +204,10 @@ export default function Reported() {
                         {accident.reportedBy === "device" ? "Reported by Device" : "Reported by User"}
                       </span>
                       <button
-                        onClick={() => handleMoreDetails(accident)}
+                        onClick={() => handleViewResponses(accident)}
                         className="px-3 py-1 rounded-full border border-blue-300 text-blue-700 bg-blue-50 text-xs font-semibold hover:bg-blue-100 transition"
                       >
-                        More Details
+                        View Responses
                       </button>
                     </td>
                   </tr>

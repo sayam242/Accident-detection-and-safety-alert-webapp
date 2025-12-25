@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { socket } from "../socket";
 import Navbar from "../Components/Navbar";
 import { useNavigate } from "react-router-dom";
 const severityColors = {
@@ -15,37 +16,39 @@ export default function Responded() {
   const navigate = useNavigate();
   
   useEffect(() => {
-    if (didRun.current) return;
-    didRun.current = true;
+  const fetchResponded = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
+      const res = await fetch(`${baseURL}/api/responded`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    const fetchResponded = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          alert("Please login as hospital");
-          navigate("/login", { replace: true });
-          return;
-        }
-        const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
-        const res = await fetch(`${baseURL}/api/responded/my`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        const data = await res.json();
-        if (data.success) {
-          setReports(data.data);
-        } else {
-          alert(data.message || "Failed to load responded reports");
-        }
-      } catch (err) {
-        console.error("Error fetching responded reports:", err);
-      } finally {
-        setLoading(false);
+      const data = await res.json();
+      if (data.success) {
+        setReports(data.data);
       }
-    };
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  fetchResponded();
+
+  // 🔥 LIVE UPDATE WHEN FINALIZED
+  const handleFinalized = () => {
     fetchResponded();
-  }, []);
+  };
+
+  socket.on("report-finalized", handleFinalized);
+
+  return () => {
+    socket.off("report-finalized", handleFinalized);
+  };
+}, []);
+
 
   if (loading) return <p className="text-center">Loading...</p>;
   if (reports.length === 0) {
@@ -78,7 +81,9 @@ export default function Responded() {
                 <p><b>Contact No:</b> {rep.contact}</p>
                 <p>
                   <b>Reported Time:</b>{" "}
-                  {new Date(rep.timeDetected || rep.createdAt).toLocaleString()}
+                  {rep.timeDetected
+                    ? new Date(rep.timeDetected).toLocaleString()
+                    : "—"}
                 </p>
               </div>
 
@@ -100,7 +105,9 @@ export default function Responded() {
                 </p>
                 <p>
                   <b>Responded Time:</b>{" "}
-                  {new Date(rep.timeResponded).toLocaleString()}
+                  {rep.timeResponded
+                    ? new Date(rep.timeResponded).toLocaleString()
+                    : "—"}
                 </p>
               </div>
 

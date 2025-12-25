@@ -2,6 +2,7 @@
 import Report from "../models/accidents/Reports.js";
 import imagekit from "../config/imagekit.js";
 import Responded from "../models/accidents/Responded.js";
+import { getIO } from "../socket.js";
 const DEVICE_IMAGE =
   "https://ik.imagekit.io/qwykl2wxyq/WhatsApp%20Image%202025-12-12%20at%2013.52.57.jpeg";  // replace with your ImageKit URL
 
@@ -16,7 +17,6 @@ export const createReport = async (req, res) => {
       });
     }
 
-    // --- Webapp: Image MUST be provided ---
     if (reportedBy !== "device" && !image) {
       return res.status(400).json({
         success: false,
@@ -24,9 +24,8 @@ export const createReport = async (req, res) => {
       });
     }
 
-    let finalImageURL = null;
+    let finalImageURL;
 
-    // --- If webapp: Upload the image ---
     if (reportedBy !== "device") {
       const uploadResponse = await imagekit.upload({
         file: image,
@@ -34,11 +33,12 @@ export const createReport = async (req, res) => {
       });
       finalImageURL = uploadResponse.url;
     } else {
-      // --- Device: Use placeholder image ---
       finalImageURL = DEVICE_IMAGE;
     }
+    console.log("🧪 createReport controller HIT");
 
-    await Report.create({
+    // ✅ STORE created report
+    const report = await Report.create({
       name,
       severity: condition,
       contact,
@@ -50,10 +50,18 @@ export const createReport = async (req, res) => {
       },
     });
 
+    // ✅ EMIT SOCKET EVENT BEFORE RESPONSE
+    const io = getIO();
+    io.emit("new-accident", report);
+
+
+    // ✅ SEND HTTP RESPONSE LAST
     return res.status(201).json({
       success: true,
       message: "Report created successfully",
+      report,
     });
+
   } catch (error) {
     console.error("Error creating report:", error);
     return res.status(500).json({
@@ -62,6 +70,7 @@ export const createReport = async (req, res) => {
     });
   }
 };
+
 
 
 export const getAllReports = async (req, res) => {

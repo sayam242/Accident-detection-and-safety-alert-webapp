@@ -4,6 +4,22 @@ import { hospiAuth } from "../middlewares/hospiAuth.js";
 
 const router = express.Router();
 
+
+router.get("/", hospiAuth, async (req, res) => {
+  try {
+    const reports = await Responded.find()
+      .sort({ timeResponded: -1 });
+
+    return res.json({ success: true, data: reports });
+  } catch (err) {
+    console.error("Error fetching all responded reports:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error fetching responded reports",
+    });
+  }
+});
+
 // Get all responded reports for logged-in hospital
 router.get("/my", hospiAuth, async (req, res) => {
   try {

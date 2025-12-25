@@ -66,6 +66,25 @@ const reportSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  // add inside reportSchema
+
+  bestResponse: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Response",
+    default: null,
+  },
+
+  isOpenForResponse: {
+    type: Boolean,
+    default: true,
+  },
+  isFinalized: {
+  type: Boolean,
+  default: false,
+  index: true,
+},
+
+
 });
 
 reportSchema.index({ location: "2dsphere" });

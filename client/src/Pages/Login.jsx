@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { socket } from "../socket";
 
 
 import "../Views/Login.css"
@@ -26,6 +27,7 @@ export default function Login(){
   };
 
   const handleSubmit = async(e) => {
+    setLoading(true);
   e.preventDefault();
     console.log(formData);
      try {
@@ -50,6 +52,13 @@ export default function Login(){
         console.log("Hospital location saved:", hospital.location.coordinates);
         console.log("Saved hospitalId:", localStorage.getItem("hospitalId"));
         alert("✅ Login successful");
+        if (!socket.connected) {
+          socket.connect();
+        }
+        // join hospital room
+        socket.emit("join-hospital", hospital._id);
+
+
         navigate("/reported");
         } else {
         alert("❌ " + (res.data.message || "Login failed"));
@@ -78,7 +87,7 @@ export default function Login(){
                     
                     <InputText label="EMAIL" value={formData.email} name="email" type="email" onChange={handleChange}/>
                     <InputText label="PASSWORD" value={formData.password} name="password" type="password" onChange={handleChange}/>
-                    <LoginButton myForm="loginForm" button="Login"/>
+                    <LoginButton myForm="loginForm" button="Login" disabled={loading} />
                     
                     <p>Don't Have Account? <a style={{color:"black"}} href="https://vigilant-live.vercel.app/signup">Create new</a></p>
                     

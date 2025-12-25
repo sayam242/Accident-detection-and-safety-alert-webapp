@@ -1,157 +1,287 @@
-import React from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import MapPopup from "./MapPopup";
+import { socket } from "../socket";
+import RespondModal from "./RespondModal";
 
-export default function DetailsPopup({ open, onClose, accident, hospiloc, token }) {
+export default function DetailsPopup({ open, onClose, accident, hospiloc }) {
   if (!open || !accident) return null;
-  console.log(accident);
-  console.log("token at starting",token);
-  
-//   const handleGenerateReport = async () => {
-//   try {
-//     const token = localStorage.getItem("token");
-//     if (!token) {
-//       // optional: redirect if you have navigate available in this component
-//       // navigate("/login", { replace: true });
-//       alert("Please login");
-//       return;
-//     }
 
-//     const res = await fetch(`http://localhost:3000/api/pdf/report/${accident._id}`, {
-//       method: "GET",
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
+  const [responses, setResponses] = useState([]);
+  const [respondOpen, setRespondOpen] = useState(false);
+  const [ambulances, setAmbulances] = useState([]);
+  const [, forceUpdate] = useState(0);
 
-//     if (res.status === 401 || res.status === 403) {
-//       localStorage.removeItem("token");
-//       // navigate("/login", { replace: true });
-//       alert("Session expired. Please login again.");
-//       return;
-//     }
+  useEffect(() => {
+  const interval = setInterval(() => {
+    forceUpdate((n) => n + 1); // triggers re-render every minute
+  }, 60 * 1000); // every 1 minute
 
-//     if (!res.ok) {
-//       const t = await res.text().catch(() => "");
-//       console.error("PDF error:", t);
-//       alert("Failed to generate PDF");
-//       return;
-//     }
-
-//     const blob = await res.blob();
-//     const url = window.URL.createObjectURL(blob);
-//     const a = document.createElement("a");
-//     const ts = new Date(accident.timeDetected || accident.createdAt || Date.now())
-//       .toISOString()
-//       .split("T")[0];
-//     a.href = url;
-//     a.download = `Accident_Report_${ts}_${accident._id}.pdf`;
-//     document.body.appendChild(a);
-//     a.click();
-//     a.remove();
-//     window.URL.revokeObjectURL(url);
-//   } catch (e) {
-//     console.error(e);
-//     alert("Could not generate PDF");
-//   }
-// };
+  return () => clearInterval(interval);
+}, []);
 
 
-const alothandler = async () => {
-  try {
+
+  useEffect(() => {
+  if (!open || !accident?._id) return;
+
+  const fetchResponses = async () => {
     const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
+    const token = localStorage.getItem("token");
+
     const res = await fetch(
-      `${baseURL}/api/reports/${accident._id}`,
+      `${baseURL}/api/responses/${accident._id}`,
       {
-        method: "DELETE",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       }
     );
 
-    if (!res.ok) {
-      const text = await res.text();
-      console.error("Backend error:", text);
-      alert("Failed to allocate ambulance");
+    const data = await res.json();
+    if (data.success) {
+      setResponses(data.responses);
+    }
+  };
+
+  fetchResponses();
+}, [open, accident?._id]);
+
+  /* ---------------- SOCKET: LIVE RESPONSES ---------------- */
+
+
+  useEffect(() => {
+    if (!open || !accident?._id) return;
+
+    socket.emit("join-accident", accident._id);
+
+    const handleNewResponse = (data) => {
+      if (data?.accidentId === accident._id) {
+        setResponses((prev) => [...prev, data.response]);
+      }
+    };
+
+    socket.on("new-response", handleNewResponse);
+
+    return () => {
+      socket.off("new-response", handleNewResponse);
+    };
+  }, [open, accident?._id]);
+
+
+
+  useEffect(() => {
+  if (!open) return;
+
+  const fetchAmbulances = async () => {
+    const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${baseURL}/api/ambulances`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+
+    // ✅ only available ambulances
+    setAmbulances(
+      data.ambulances.filter((a) => a.status === "available")
+    );
+  };
+
+  fetchAmbulances();
+}, [open]);
+
+  /* ---------------- SORT & FASTEST LOGIC ---------------- */
+  const sortedResponses = useMemo(() => {
+    return [...responses].sort(
+      (a, b) => a.estimatedTimeToReach - b.estimatedTimeToReach
+    );
+  }, [responses]);
+
+  const fastestETA =
+    sortedResponses.length > 0
+      ? sortedResponses[0].estimatedTimeToReach
+      : null;
+
+  /* ---------------- RESPOND HANDLERS ---------------- */
+  const handleRespond = () => {
+    setRespondOpen(true);
+  };
+
+ const handleSubmitResponse = async (data) => {
+  try {
+    const baseURL = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${baseURL}/api/responses`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        accident: accident._id,
+        ambulance: data.ambulanceId,
+        estimatedTimeToReach: data.estimatedTimeToReach,
+      }),
+    });
+
+    const result = await res.json();
+
+    if (!result.success) {
+      alert(result.message);
       return;
     }
 
-    const data = await res.json();
-    if (data.success) {
-      alert("Ambulance allocated and report moved!");
-      onClose(); // close popup
-    } else {
-      alert(data.message || "Unexpected error");
-    }
+    setRespondOpen(false);
   } catch (err) {
-    console.error("Allocation error:", err);
-    alert("Error allocating ambulance");
+    console.error(err);
+    alert("Failed to submit response");
   }
 };
 
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-auto">
-      
+const getRemainingETA = (response) => {
+  const now = Date.now();
+  const respondedAt = new Date(response.createdAt).getTime();
 
-      <div className="bg-white rounded-3xl border border-gray-300 shadow-lg w-full max-w-2xl p-6 relative">
-        {/* Close Button */}
+  const elapsedMinutes = (now - respondedAt) / (1000 * 60);
+  const remaining = Math.ceil(
+    response.estimatedTimeToReach - elapsedMinutes
+  );
+
+  return remaining > 0 ? remaining : 0;
+};
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white rounded-3xl shadow-lg w-full max-w-3xl p-6 relative">
+
+        {/* Close */}
         <button
-          className="absolute top-1 right-3 text-gray-400 hover:text-gray-600 text-2xl"
           onClick={onClose}
+          className="absolute top-2 right-4 text-2xl text-gray-400 hover:text-gray-600"
         >
           &times;
         </button>
-      
-        <div className="w-full h-50 rounded-2xl flex items-center justify-center mt-2 mb-6 relative">
-          {accident.location.coordinates && <MapPopup coords={accident.location.coordinates} hospiloc={hospiloc} />}
-          
-          <span className="absolute bottom-4 right-4 bg-white rounded-full p-2 shadow">
-            
-            <span className="text-gray-500"></span>
-          </span>
-        </div>
-        {/* Details Grid */}
-        <div className="grid grid-cols-4 gap-y-4 gap-x-2 text-center mb-6">
-          <div>
-            <div className="font-bold">Location</div>
-            <div>{accident.location?.coordinates?.join(", ")}</div>
-          </div>
-          <div>
-            <div className="font-bold">Time</div>
-            <div>{accident.time}</div>
-          </div>
-          <div>
-            <div className="font-bold">Severity</div>
-            <div className="text-red-500">{accident.severity}</div>
-          </div>
-          <div>
-            <div className="font-bold">Distance</div>
-            <div>{accident.distanceKm != null ? `${accident.distanceKm} km` : "Unknown"}</div>
-          </div>
-         
-          
-        </div>  
-         <div className="grid grid-cols-2 gap-y-4 gap-x-40 text-left">
-            <p><b>Reported BY: </b>{accident.name}</p>
-            <p><b>Contact no: </b>{accident.contact}</p>\
-            <p>
-              <b>Reported Via: </b>
-              {accident.reportedBy === "device" ? "Device" : "Web App"}
-            </p>
 
-          </div>
-        {/* Action Buttons */}
-        <div className="justify-between mt-4">
-          {/* <button onClick={handleGenerateReport} className="border border-blue-500 text-blue-600 px-6 py-2 rounded-full font-semibold hover:bg-blue-50">
-            Generate Report
-          </button> */}
-          <button onClick={alothandler} className="border border-red-500 text-red-600 px-6 py-2 rounded-full font-semibold hover:bg-red-50">
-            Allot Ambulance
-          </button>
-          {/* <button className="border border-green-500 text-green-600 px-6 py-2 rounded-full font-semibold hover:bg-green-50">
-            Mark as Resolved
-          </button> */}
+        {/* Map */}
+        <div className="mb-6">
+          {accident.location?.coordinates && (
+            <MapPopup
+              coords={accident.location.coordinates}
+              hospiloc={hospiloc}
+            />
+          )}
         </div>
+
+        {/* Accident Info */}
+        <div className="grid grid-cols-4 text-center gap-4 mb-6">
+          <div>
+            <div className="font-semibold">Location</div>
+            <div className="text-sm">
+              {accident.location.coordinates.join(", ")}
+            </div>
+          </div>
+          <div>
+            <div className="font-semibold">Time</div>
+            <div className="text-sm">
+              {accident.timeDetected
+                ? new Date(accident.timeDetected).toLocaleString()
+                : "—"}
+            </div>
+          </div>
+          <div>
+            <div className="font-semibold">Severity</div>
+            <div className="text-red-600 font-bold">
+              {accident.severity}
+            </div>
+          </div>
+          <div>
+            <div className="font-semibold">Distance</div>
+            <div className="text-sm">
+              {accident.distanceKm ?? "?"} km
+            </div>
+          </div>
+        </div>
+
+        {/* Reporter */}
+        <div className="grid grid-cols-3 gap-4 mb-6 text-sm">
+          <p><b>Reported By:</b> {accident.name}</p>
+          <p><b>Contact:</b> {accident.contact}</p>
+          <p>
+            <b>Source:</b>{" "}
+            {accident.reportedBy === "device" ? "Device" : "Web App"}
+          </p>
+        </div>
+
+        {/* ---------------- LIVE RESPONSE LIST ---------------- */}
+        <div className="mb-6">
+          <h3 className="font-semibold mb-3 text-lg">
+            Hospital Responses (Live)
+          </h3>
+
+          {sortedResponses.length === 0 ? (
+            <div className="text-sm text-gray-500 italic">
+              No hospital has responded yet
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {sortedResponses.map((res, idx) => {
+                const isFastest =
+                  res.estimatedTimeToReach === fastestETA;
+
+                return (
+                  <div
+                    key={idx}
+                    className={`flex justify-between items-center border rounded-lg px-4 py-2 ${
+                      isFastest
+                        ? "bg-green-50 border-green-400"
+                        : "bg-gray-50"
+                    }`}
+                  >
+                    <div>
+                      <div className="font-semibold">
+                        {res.hospitalName}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        ETA: {getRemainingETA(res)} min
+                      </div>
+                    </div>
+
+                    {isFastest ? (
+                      <span className="text-xs font-bold text-green-700 bg-green-200 px-3 py-1 rounded-full">
+                        FASTEST
+                      </span>
+                    ) : (
+                      <span className="text-xs text-yellow-700 bg-yellow-100 px-3 py-1 rounded-full">
+                        ACTIVE
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Action */}
+        <div className="flex justify-end">
+          <button
+            onClick={handleRespond}
+            className="px-6 py-2 rounded-full border border-blue-500 text-blue-600 font-semibold hover:bg-blue-50"
+          >
+            Respond to Accident
+          </button>
+        </div>
+
+        {/* 🔥 RESPOND MODAL (CORRECT PLACE) */}
+        <RespondModal
+          open={respondOpen}
+          onClose={() => setRespondOpen(false)}
+          onSubmit={handleSubmitResponse}
+          ambulances={ambulances}
+        />
       </div>
     </div>
   );

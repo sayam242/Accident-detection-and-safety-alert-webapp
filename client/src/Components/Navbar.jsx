@@ -5,6 +5,7 @@ import wifi_icon_g from '../assets/dashboard/Wi-Fi grey.png'
 import phone_g from '../assets/dashboard/Smartphone grey.png'
 import phone_w from '../assets/dashboard/Smartphone white.png'
 import { useNavigate } from 'react-router-dom';
+import { socket } from "../socket";
 
 
 function Navbar() {
@@ -24,6 +25,7 @@ function Navbar() {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("hospitalId");
+    socket.disconnect();
     navigate("/login");
   };
 
@@ -61,8 +63,15 @@ function Navbar() {
           <img className='h-5 w-5' src={active === 'reported' ? phone_g : phone_w} alt="" />
           <button  className="px-2 py-1">Reported</button></div>
   </div>
-
+  <div>
+  <Link
+    to="/ambulances"
+    className="px-4 py-2 rounded bg-blue-600 mr-3 text-white text-sm hover:bg-blue-700"
+  >
+    Manage Ambulances
+  </Link>
   <button onClick={logout}>Logout</button>
+  </div>
 
 </nav>
 
