@@ -32,9 +32,7 @@ function Navbar() {
     return (
        <nav className="bg-white shadow px-6 py-3 flex items-center justify-between">
   
-  <div onClick={()=>{
-    navigate("/")
-  }} className="flex items-center space-x-2"
+  <div  className="flex items-center space-x-2"
   style={{ cursor: "pointer" }}>
     <span className="w-3 h-3 bg-red-600 rounded-full"></span>
     <span className="text-2xl font-bold text-gray-800 tracking-wide">VIGILANT</span>
