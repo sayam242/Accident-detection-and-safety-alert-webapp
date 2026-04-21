@@ -21,9 +21,6 @@ export default function Reported() {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState("");
   const [accidentData, setAccidentData] = useState([]);
-  const [alert, setAlert] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
-  const audioRef = useRef(null);
   const navigate = useNavigate();
 
   // ✅ Check token on component mount
@@ -80,32 +77,7 @@ export default function Reported() {
 useEffect(() => {
   const handleNewAccident = (data) => {
     console.log("🚨 new-accident event received:", data);
-
-    // prevent spam
-    if (showAlert) return;
-
-    // 🔊 create looping audio
-    const audio = new Audio("/alert.mp3");
-    audio.loop = true;
-    audio.volume = 0.1; 
-    audioRef.current = audio;
-
-    audio.play().catch(() => {});
-
-    // 🧠 set alert
-    setAlert({
-      severity: data.severity || "Moderate",
-      location: data.location?.coordinates,
-    });
-
-    setShowAlert(true);
-
-    // ⏱ auto remove after 4 sec
-    setTimeout(() => {
-      handleCloseAlert();
-    }, 4000);
-
-    fetchReports();
+    fetchReports(); // refetch from backend
   };
 
   socket.on("new-accident", handleNewAccident);
@@ -142,27 +114,10 @@ useEffect(() => {
 
   const hospiloc = localStorage.getItem("hospitalLocation");
 
-  const handleCloseAlert = () => {
-    setShowAlert(false);
-
-    // 🔊 stop audio
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-
-    // remove after animation
-    setTimeout(() => {
-      setAlert(null);
-    }, 300);
-  };
-  
-
   // ✅ Show loading while checking token
   if (loading) {
     return <p className="text-center">Checking login...</p>;
   }
-
 
   return (
     <>
@@ -174,37 +129,6 @@ useEffect(() => {
         hospiloc={hospiloc}
         token={token}
       />
-
-
-      {alert && (
-        <div
-          className={`fixed top-5 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
-            showAlert ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"
-          }`}
-        >
-          <div
-            className="px-6 py-3 rounded-xl border shadow-lg flex items-center gap-4 bg-red-100 text-red-600 border-red-300"
-          >
-            <div>
-              <span className="font-bold block">🚨 New Accident</span>
-              <span className="text-sm">
-                {alert.severity} near{" "}
-                {alert.location
-                  ? `${alert.location[1].toFixed(3)}, ${alert.location[0].toFixed(3)}`
-                  : "Unknown"}
-              </span>
-            </div>
-
-            <button
-              onClick={handleCloseAlert}
-              className="ml-2 px-3 py-1 text-xs font-semibold bg-white text-gray-800 rounded-md shadow hover:bg-gray-200 transition"
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      )}
-
 
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="bg-white rounded-2xl shadow p-6">
