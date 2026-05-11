@@ -1,6 +1,6 @@
 import express from "express";
 import Responded from "../models/accidents/Responded.js";
-import { hospiAuth } from "../middlewares/hospiAuth.js";
+import { hospiAuth } from "../middlewares/auth/hospiAuth.js";
 
 const router = express.Router();
 

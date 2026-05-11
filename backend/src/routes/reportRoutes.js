@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 import Report from "../models/accidents/Reports.js";
 import Hospital from "../models/accounts/Hospital.js";
-import { hospiAuth } from "../middlewares/hospiAuth.js";
+import { hospiAuth } from "../middlewares/auth/hospiAuth.js";
 import * as reportController from "../controllers/reportsController.js";
 
 const router = express.Router();
@@ -29,18 +29,18 @@ function haversine([lon1, lat1], [lon2, lat2]) {
 //   try {
 //     let { hospitalId } = req.query;
 //     hospitalId = hospitalId?.replace(/['"]/g, "");
-
+//
 //     if (!mongoose.Types.ObjectId.isValid(hospitalId))
 //       return res.status(400).json({ success: false, message: "Invalid hospitalId" });
-
+//
 //     const hospital = await Hospital.findById(hospitalId);
 //     if (!hospital?.location?.coordinates?.length)
 //       return res.status(404).json({ success: false, message: "Hospital location not found" });
-
+//
 //     const hospCoords = hospital.location.coordinates;       // [lon, lat]
-
+//
 //     const reports = await Report.find({});
-
+//
 //     const enriched = reports.map(r => {
 //       const accCoords = r.location?.coordinates;
 //       if (!accCoords) {
@@ -49,7 +49,7 @@ function haversine([lon1, lat1], [lon2, lat2]) {
 //       const dist = haversine(hospCoords, accCoords).toFixed(2) + " km";
 //       return { ...r.toObject(), distance: dist };
 //     });
-
+//
 //     return res.json({ success: true, reports: enriched });
 //   } catch (err) {
 //     console.error("Error fetching reports:", err);

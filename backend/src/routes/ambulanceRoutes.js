@@ -1,5 +1,5 @@
 import express from "express";
-import { hospiAuth } from "../middlewares/hospiAuth.js";
+import { hospiAuth } from "../middlewares/auth/hospiAuth.js";
 import {
   getMyAmbulances,
   createAmbulance,

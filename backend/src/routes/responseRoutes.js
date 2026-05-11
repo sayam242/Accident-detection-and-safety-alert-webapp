@@ -1,5 +1,5 @@
 import express from "express";
-import { hospiAuth } from "../middlewares/hospiAuth.js";
+import { hospiAuth } from "../middlewares/auth/hospiAuth.js";
 import { createResponse } from "../controllers/responseController.js";
 import { getResponsesByAccident } from "../controllers/responseController.js";
 

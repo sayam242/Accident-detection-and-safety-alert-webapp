@@ -2,20 +2,20 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import http from "http";
-import { initSocket } from "./socket.js";
+import { initSocket } from "./src/socket.js";
 
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 
 // Routes
-import authRoutes from "./routes/authRoutes.js";
-import reportRoutes from "./routes/reportRoutes.js";
-import respondedRoutes from "./routes/respondedRoutes.js";
-import otpRoutes from "./routes/otpRoutes.js";
-import pdfRoutes from "./routes/pdfRoutes.js";
-import ambulanceRoutes from "./routes/ambulanceRoutes.js";
-import responseRoutes from "./routes/responseRoutes.js";
+import authRoutes from "./src/routes/authRoutes.js";
+import reportRoutes from "./src/routes/reportRoutes.js";
+import respondedRoutes from "./src/routes/respondedRoutes.js";
+import otpRoutes from "./src/routes/otpRoutes.js";
+import pdfRoutes from "./src/routes/pdfRoutes.js";
+import ambulanceRoutes from "./src/routes/ambulanceRoutes.js";
+import responseRoutes from "./src/routes/responseRoutes.js";
 
 const app = express();
 const CLIENT_URL = process.env.CLIENT_URL;

@@ -3,7 +3,7 @@ import PDFDocument from "pdfkit";
 import axios from "axios";
 import mongoose from "mongoose";
 import Report from "../models/accidents/Reports.js";
-import { hospiAuth } from "../middlewares/hospiAuth.js";
+import { hospiAuth } from "../middlewares/auth/hospiAuth.js";
 
 const router = express.Router();
 

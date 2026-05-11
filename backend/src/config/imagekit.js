@@ -1,4 +1,3 @@
-// config/imagekit.js
 import dotenv from "dotenv";
 import ImageKit from "imagekit";
 

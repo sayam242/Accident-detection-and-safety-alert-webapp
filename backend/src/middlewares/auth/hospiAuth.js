@@ -1,8 +1,8 @@
-// middlewares/hospiAuth.js
 import dotenv from "dotenv";
-dotenv.config();
 import jwt from "jsonwebtoken";
-import Hospital from "../models/accounts/Hospital.js";
+import Hospital from "../../models/accounts/Hospital.js";
+
+dotenv.config();
 
 const SECRET = process.env.JWT_SECRET;
 

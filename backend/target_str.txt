@@ -1,0 +1,38 @@
+📁 backend/src/
+├── 📁 constants/ (CREATE)
+│   ├── statusConstants.js
+│   ├── configConstants.js
+│   ├── errorMessages.js
+│   └── urls.js
+│
+├── 📁 helpers/ (CREATE)
+│   ├── geospatialHelpers.js
+│   ├── pdfHelpers.js
+│   ├── otpHelpers.js
+│   ├── passwordHelpers.js
+│   └── imageHelpers.js
+│
+├── 📁 services/ (CREATE & REFACTOR)
+│   ├── responseService.js
+│   ├── otpService.js
+│   ├── pdfService.js
+│   ├── imageService.js
+│   └── accidentService.js
+│
+├── 📁 utils/ (CREATE)
+│   ├── tokenUtils.js
+│   ├── responseUtils.js
+│   ├── validationUtils.js
+│   └── errorHandler.js
+│
+├── 📁 middlewares/
+│   ├── auth/ ✅ (already used)
+│   └── validation/ (CREATE)
+│       ├── reportValidator.js
+│       ├── ambulanceValidator.js
+│       ├── responseValidator.js
+│       ├── otpValidator.js
+│       └── authValidator.js
+│
+└── 📁 jobs/ (CREATE & EXTRACT)
+    └── finalizeResponseJob.js
