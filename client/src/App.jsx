@@ -2,15 +2,13 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
-import Create1 from "./Pages/Create1.jsx";
-import Create2 from "./Pages/Create2.jsx";
+import SignUp from "./Pages/SignUp.jsx";
 import Login from "./Pages/Login.jsx";
 import NotFound from "./Pages/NotFound.jsx";
 import LandingPage from "./Pages/LandingPage.jsx";
 import Report from "./Pages/Report.jsx";        // public reporting
 import ProtectedRoute from "./Components/ProtectedRoute";
-import Home from "./Pages/Home.jsx";            // Reported (hospital dashboard)
-import Detected from "./Pages/HomeDetected.jsx";
+import Reported from "./Pages/Reported.jsx";            // Reported (hospital dashboard)
 import Responded from "./Pages/Responded.jsx"; // Responded (hospital dashboard)\
 import ManageAmbulances from "./Pages/ManageAmbulances.jsx";
 import { socket } from "./socket";
@@ -36,8 +34,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup-step1" element={<Create1 />} />
-        <Route path="/signup" element={<Create2 />} />
+        <Route path="/signup" element={<SignUp />} />
 
         {/* Public: citizen report */}
         <Route path="/report" element={<Report />} />
@@ -47,7 +44,7 @@ export default function App() {
           path="/reported"
           element={
             <ProtectedRoute>
-              <Home />
+              <Reported />
             </ProtectedRoute>
           }
         />

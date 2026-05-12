@@ -1,16 +1,17 @@
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
 import "../Views/Create2.css"
-import CurrentLoc from "../Components/CurrentLoc"
-import BackgroundImage from "../Components/BackgroundImage";
-import LoginButton from "../Components/LoginButton";
-import InputText from "../Components/InputText";
+import CurrentLoc from "../Components/CurrentLoc.jsx"
+import BackgroundImage from "../Components/BackgroundImage.jsx";
+import LoginButton from "../Components/LoginButton.jsx";
+import InputText from "../Components/InputText.jsx";
 import LocationPicker from "../Components/LocationPicker.jsx"
 import { useNavigate } from "react-router-dom";
-import Modal from "../Components/Modal";
+import Modal from "../Components/Modal.jsx";
 import axios from "axios";
 
-export default function Create2(){
+export default function SignUp(){
     const navigate = useNavigate();
     const [userType, setUserType] = useState("");
     const [showMap, setShowMap] = useState(false);
