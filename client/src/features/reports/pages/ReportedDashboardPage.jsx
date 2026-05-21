@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import DetailsPopup from "../Components/map/DetailsPopup";
+import DetailsPopup from "../components/map/DetailsPopup";
 import ReportedTable from "../components/ReportedTable";
 import { useReports } from "../hooks/useReports";
 import { socket } from "../../../socket";
