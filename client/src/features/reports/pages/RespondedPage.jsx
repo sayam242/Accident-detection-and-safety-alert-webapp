@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Navbar from "../Components/Navbar";
+import Navbar from "../components/Navbar";
 import { useReports } from "../hooks/useReports";
 import { socket } from "../../../socket";
 
