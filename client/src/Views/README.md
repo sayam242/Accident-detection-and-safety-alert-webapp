@@ -1,0 +1,1 @@
+Deprecated: migrate CSS files into `src/styles` or feature folders.

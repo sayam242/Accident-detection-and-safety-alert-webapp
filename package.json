@@ -1,7 +1,10 @@
 {
     "scripts":{"client":"npm run dev --prefix client",
+    "client:new-app":"npm run dev:new-app --prefix client",
     "index":"npm run dev --prefix backend",
-    "dev":"concurrently \"npm run client\" \"npm run index\""},
+    "dev":"concurrently \"npm run client:new-app\" \"npm run index\"",
+    "dev:legacy":"concurrently \"npm run client\" \"npm run index\"",
+    "dev:new-app":"concurrently \"npm run client:new-app\" \"npm run index\""},
     "devDependencies":{"@tailwindcss/postcss":"^4.1.11",
     "autoprefixer":"^10.4.21","concurrently":"^9.2.0",
     "postcss":"^8.5.6","tailwindcss":"^4.1.11"},
