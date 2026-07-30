@@ -1,6 +1,14 @@
 <p align="center">
-  <img width="193" height="41" alt="Group 61" src="https://github.com/user-attachments/assets/7e52cc1c-afa1-4af2-8e11-eb9a9e9ad433" />
+  <a href="https://www.vigilantlive.in/" target="_blank">
+    <img
+      width="193"
+      height="41"
+      alt="Group 61"
+      src="https://github.com/user-attachments/assets/7e52cc1c-afa1-4af2-8e11-eb9a9e9ad433"
+    />
+  </a>
 </p>
+
 
 <p align="center">
   <a href="./client/src"><b>Frontend Source Code</b></a> |
@@ -10,6 +18,11 @@
 <h2 align="center"><b>Accident Detection & Response System</b></h2>
 <p align="center"><i>When Accidents Happen -- We're Already Responding</i></p>
 
+
+# Link to VIGILANT
+https://www.vigilantlive.in/
+
+---
 
 <!-- TOC ignore:true -->
 ### 📑Table of Content
